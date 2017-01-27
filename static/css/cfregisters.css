@@ -1,0 +1,110 @@
+.mdl-navigation a:hover{
+  background-color : #05867a !important;
+}
+
+.mdl-autocomplete label {
+  color: #fff;
+}
+
+#comparator-autocomplete .mdl-autocomplete {
+  width: 100%;
+}
+
+#comparator-autocomplete label {
+  color: rgb(0, 150, 136);
+}
+
+.mdl-option.mdl-option--selected {
+  background-color: rgb(0, 150, 136);
+  color: #fff;
+}
+
+.chord-container {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #525252;
+  text-align: center;
+}
+
+.chord-container line {
+  stroke: #000;
+  stroke-width: 1.px;
+}
+
+.chord-container text {
+  font-size: 8px;
+}
+
+.chord-container path.chord {
+  fill-opacity: .80;
+}
+
+.chord-container .title {
+  text-anchor: middle;
+  fill: #3B3B3B;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.chord-container .titleLine {
+  stroke: #DCDCDC;
+  shape-rendering: crispEdges;
+}
+
+.chord-container .title-h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: #3B3B3B;
+}
+
+#entityInfos .scopenote {
+  font-style: italic;
+  font-size: 20px;
+}
+
+#entityInfos .item-label {
+  margin-right: 10px;
+}
+
+#entityInfos .item-label:after {
+  content: " :"
+}
+
+#entityInfos .item-value {
+  color: #009688;
+  font-weight: bold;
+}
+
+#coplayedpie {
+  border-top: 1px solid #525252;
+}
+
+.calendar-day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.calendar-daylabel,
+.calendar-monthlabel {
+  font-size: 20px;
+  fill: #ccc;
+}
+
+.calendar-day.calendar-first-day {
+  border-top: 1px solid red;
+}
+
+.calendar-day.calendar-empty-cell {
+  stroke: none;
+}
+
+@media (min-width: 500px) {
+  .chord-container .explanation {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
