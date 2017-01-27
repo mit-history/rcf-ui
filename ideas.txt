@@ -1,0 +1,4 @@
+- jauge pour répartition des genres par auteur (e.g 80% comédie)
+- sparkline pour recettes
+- recettes totales
+- auteurs les plus souvent joués avec + un lien vers une visu associée

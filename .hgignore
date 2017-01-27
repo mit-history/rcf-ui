@@ -1,0 +1,5 @@
+syntax: glob
+static/js/*-bundle*
+test/data/bfss*
+test/data/database*
+node_modules

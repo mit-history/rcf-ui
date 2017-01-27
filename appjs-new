@@ -1,0 +1,11 @@
+#!/bin/bash
+set -xe
+
+DIR="$(dirname "$(readlink -f "$0")")"
+if [ "$#" -ne 1 ]; then
+    echo "USAGE: appjs-new <dest-dir>"
+    exit 1
+fi
+
+cp -r $DIR $1
+rm -rf $1/.hg
