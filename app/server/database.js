@@ -516,6 +516,7 @@ WHERE t.date=$1`, [date])
 function registerInfos(date) {
     return db.query(`
 SELECT r.date, r.weekday, r.total_receipts_recorded_l receipts,
+       r.payment_notes, r.misc_notes, r.for_editor_notes,
        rp.ordering, rp.debut, rp.reprise,
        p.id play_id, p.title play_title, n.normalized play_genre,
        pa.id author_id, pa.name author_name
@@ -532,6 +533,9 @@ ORDER BY rp.ordering`, [date])
             date: rows[0].date,
             weekday: rows[0].weekday,
             receipts: rows[0].receipts,
+            payment_notes: rows[0].payment_notes,
+            misc_notes: rows[0].misc_notes,
+            editor_notes: rows[0].for_editor_notes,
             plays: rows.map(row => ({
                 id: row.play_id,
                 title: row.play_title,

@@ -102,6 +102,13 @@
   stroke: none;
 }
 
+.item .notes {
+  display: inline-block;
+  margin-left: 1em;
+  border-left: 1px solid #009688;
+  padding-left: 1em;
+}
+
 @media (min-width: 500px) {
   .chord-container .explanation {
     width: 50%;

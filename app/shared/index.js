@@ -22,13 +22,15 @@ export function checkboxFormatter(cell) {
 
 
 export function infoprops(items) {
-   const infos = items
-         .filter(item => item.value !== null && item.value !== undefined)
-         .map(item =>
-              ce('p', {className: 'item'},
-                 item.label ? ce('span', {className: item.labelClass || 'item-label'}, item.label) : null,
-                 ce('span', {className: item.valueClass || 'item-value'}, item.value))
-             );
+    const infos = items
+          .filter(item => item.value !== null &&
+                  item.value !== undefined &&
+                  item.value !== '')
+          .map(item =>
+               ce('p', {className: 'item'},
+                  item.label ? ce('span', {className: item.labelClass || 'item-label'}, item.label) : null,
+                  ce('span', {className: item.valueClass || 'item-value'}, item.value))
+              );
     return ce(CardText, {id: 'entityInfos'}, ...infos);
 }
 

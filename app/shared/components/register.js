@@ -64,6 +64,12 @@ function registerMainCardView({register}) {
                  infoprops([
                      {label: 'Jour de la semaine', value: weekday},
                      {label: 'Recettes', value: `${receipts} livres`},
+                     {label: 'Notes relatives aux recettes',
+                      value: register.payment_notes, valueClass: 'notes'},
+                     {label: 'Notes diverses',
+                      value: register.misc_notes, valueClass: 'notes'},
+                     {label: 'Note éditeur',
+                      value: register.editor_notes, valueClass: 'notes'},
                  ])));
 }
 
