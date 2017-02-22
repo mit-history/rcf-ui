@@ -166,21 +166,23 @@ function authorGalleryView({authorData}) {
         imgurl: image.imgurl,
         targeturl: image.url,
         imgtitle: `${image.title} (${image.subtitle})`,
+        imgsrc: 'Illustration provenant de La Grange',
     }));
 
     authorData.depict_urls.forEach(image => {
         const imgurl = image;
-        let imgtitle, targeturl;
+        let imgsrc, targeturl;
         if (imgurl.indexOf('wiki') !== -1) {
-            imgtitle = 'Illustration provenant de wikimedia';
+            imgsrc = 'Illustration provenant de wikimedia';
             targeturl = imgurl;
         } else if (imgurl.indexOf('ark:/') !== -1) {
-            imgtitle = 'Illustration provenant de Gallica';
+            imgsrc = 'Illustration provenant de Gallica';
             targeturl = imgurl.slice(0, -10);  // remove ".thumbnail" extension
         }
+
         imageObjects.push({
             imgurl,
-            imgtitle,
+            imgsrc,
             targeturl,
         });
     });
@@ -189,13 +191,17 @@ function authorGalleryView({authorData}) {
               ce(CardTitle, {style: STYLES.titleChart}, 'Images'),
               ce(CardText, {className: 'mdl-grid', style: {margin: "auto"}},
                  ...imageObjects.map(image => ce(
-                     'div', {className: mdlclass({col:2, tablet: 4, phone: 2}),
+                     'div', {className: classNames('mdl-shadow--2dp author-image-wrapper', mdlclass({col:2, tablet: 4, phone: 2})),
                              style: {justifyContent: "center", padding: "5px"}},
                      ce(Lazy, {nodeName: 'a', href: image.targeturl, title: image.imgtitle,
-                               className: 'image-link image-link--200px'},
+                               className: 'image-link image-link--200px', style: {textDecoration: 'none'}},
                         ce('img', {alt: image.imgtitle,
                                    src: image.imgurl,
-                                   style: {maxHeight: "200px", maxWidth: "200px"}})))))
+                                   style: {maxHeight: "200px", maxWidth: "100%", display: "block", margin: "auto"}}),
+                        ce('p', {className: 'author-img-caption'},
+                          ce('span', {className: 'author-image-title'}, `${image.imgtitle}` !== 'undefined' ? `${image.imgtitle}` : ''),
+                          ce('span', {className: 'author-image-src'}, `${image.imgsrc}`)
+                        )))))
              );
 }
 

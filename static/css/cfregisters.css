@@ -83,6 +83,40 @@
   border-top: 1px solid #525252;
 }
 
+.author-image-wrapper {
+  border-top: 3px solid white;
+}
+
+.author-image-wrapper:hover {
+  border-top: 3px solid #009687;
+}
+
+.author-image-title {
+  text-align: center;
+  display: block;
+  font-style: italic;
+  color: #009687;
+}
+
+.author-img-caption {
+  margin-top: 2em;
+}
+
+.author-image-title::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  color: #009688;
+  height: 2px;
+}
+
+.author-image-src {
+  text-align: center;
+  display: block;
+  font-size: 0.9em;
+  color: #7b7b7b;
+}
+
 .calendar-day {
   fill: #fff;
   stroke: #ccc;
