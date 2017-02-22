@@ -57,7 +57,7 @@ export default ({children}) => {
                       {to: '/', style: {fontVariant: "small-caps", fontSize: "1.5em", fontWeight: "bold" }, className: "mdl-layout-title"},
                       ce('img', {src: buildURL('/images/cfrp-logo-top-nav.png'), style:{maxHeight: "50px", marginRight: "15px", textDecoration: "none"}}), 'registres de la comédie-française'),
                     ce(Link, {to: '/authors', style: createNavLinkStyle('authors')}, 'auteurs'),
-                    ce(Link, {to: '/plays', style: createNavLinkStyle('plays')}, 'oeuvres'),
+                    ce(Link, {to: '/plays', style: createNavLinkStyle('plays')}, 'pièces'),
                     ce(Link, {to: '/seasons', style: createNavLinkStyle('seasons')}, 'saisons'),
                     ce(Link, {to: '/genres', style: createNavLinkStyle('genres')}, 'genres'),
                    ),

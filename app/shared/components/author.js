@@ -69,7 +69,7 @@ function authorPlaysOverview({authorData}){
     }
 
     return ce(Card, {className: mdlclass({col: 9, tablet: 12})},
-              ce(CardTitle, {style: STYLES.titleChart}, 'œuvres'),
+              ce(CardTitle, {style: STYLES.titleChart}, 'pièces'),
               ce(CardText, {style: {margin: "0 auto", fontSize: "1em"}},
                  ce(BootstrapTable, {data: authorData.playsOverview, hover: true},
                     ce(TableHeaderColumn, {dataField: "title",
@@ -131,7 +131,7 @@ function authorMainCardView({authorData}) {
 
     const properties = [
         {valueClass: 'scopenote', value: authorData.bnf_notes},
-        {label: 'Œuvres', value: authorData.playsOverview.length},
+        {label: 'Pièces', value: authorData.playsOverview.length},
         {label: 'Représentations', value: nbPerf},
         {label: 'Recettes', value: `${numberWithSpaces(totalReceipt)} livres`},
     ];

@@ -55,7 +55,7 @@ function genrePlayView({genreData}){
 
     return ce(Card, {className: mdlclass({col: 9, tablet: 12}),
                      style:{margin: "auto"}},
-              ce(CardTitle, {style: STYLES.titleChart}, 'œuvres'),
+              ce(CardTitle, {style: STYLES.titleChart}, 'pièces'),
               ce(CardText, {style: {margin: "auto", fontSize: "1em"}},
                  ce(BootstrapTable, {data: genreData, hover: true, pagination: true, options: options},
                     ce(TableHeaderColumn, {dataField: "play_id",

@@ -35,7 +35,7 @@ function HomeView({homeData}) {
 
     const sections = [
         {count: homeData.nbAuthors, label: 'auteurs', url: '/authors'},
-        {count: homeData.nbPlays, label: 'œuvres', url: '/plays'},
+        {count: homeData.nbPlays, label: 'pièces', url: '/plays'},
         {count: homeData.nbGenres, label: 'genres', url: '/genres'},
         {count: homeData.nbSeasons, label: 'saisons', url: '/seasons'},
     ];
