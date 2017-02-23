@@ -1,6 +1,7 @@
 import {createElement as ce, Component, PropTypes} from 'react';
 
 import {browserHistory} from 'react-router';
+import classNames from 'classnames';
 
 import {Card, CardTitle, CardText, Spinner, IconButton} from 'react-mdl';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -47,11 +48,13 @@ export class SeasonList extends Component {
                                            hidden: true}, 'ID'),
                     ce(TableHeaderColumn, {dataField:"season",
                                            dataSort: true,
-                                           dataFormat: this.urlSeasonFormatter},
+                                           dataFormat: this.urlSeasonFormatter,
+                                           width: '0.5'},
                        'Saison'),
                     ce(TableHeaderColumn, {dataField:"receipts",
                                            dataSort: true,
-                                           dataFormat: numberWithSpaces},
+                                           dataFormat: numberWithSpaces,
+                                           width: '150'},
                        'Recettes (livres)'),
                     ce(TableHeaderColumn, {dataField:"author1",
                                            dataSort: true,
@@ -108,12 +111,13 @@ function seasonPlaysOverview({registers}) {
 
     return ce(Card, {className: mdlclass(12), style: {fontSize: "1em"}},
               ce(CardTitle, {style: STYLES.titleChart}, 'Tableau des pièces jouées lors de cette saison'),
-              ce(CardText, {style: {margin: "auto",  fontSize: "1em"}},
+              ce(CardText, {style: {margin: "auto",  fontSize: "1em"}, className: mdlclass(8)},
                  ce(BootstrapTable, {data: uniq_season, hover: true, pagination: true, options: {sizePerPage: 25}},
                     ce(TableHeaderColumn, {dataField: "play_id",
                                            isKey: true, hidden: true},
                        'ID'),
                     ce(TableHeaderColumn, {dataField: "play_title",
+                                           width: '20',
                                            filter: {
                                                type: 'TextFilter',
                                                placeholder: 'Rechercher une pièce',
@@ -122,15 +126,19 @@ function seasonPlaysOverview({registers}) {
                                            dataFormat: urlPlayFormatter},
                        'Pièce'),
                     ce(TableHeaderColumn, {dataField: "play_genre",
+                                           width: '10',
                                            dataSort: true}, 'Genre'),
                     ce(TableHeaderColumn, {dataField: "firstrun",
                                            dataSort: true,
+                                           width: '10',
                                            dataFormat: checkboxFormatter},
                        'Première'),
                     ce(TableHeaderColumn, {dataField: "reprise",
+                                           width: '10',
                                            dataSort: true,
                                            dataFormat: checkboxFormatter}, 'Reprise'),
                     ce(TableHeaderColumn, {dataField: "author_name",
+                                           width: '20',
                                            filter: {
                                                type: 'TextFilter',
                                                placeholder: 'Rechercher un auteur',
@@ -140,6 +148,7 @@ function seasonPlaysOverview({registers}) {
                                            dataFormat: urlAuthorFormatter},
                        'Auteur'),
                     ce(TableHeaderColumn, {dataField: "count",
+                                           width: '20',
                                            dataSort: true},
                        'Nombre de représentations')
                    ))
