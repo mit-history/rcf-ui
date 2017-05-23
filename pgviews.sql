@@ -18,7 +18,7 @@ CREATE MATERIALIZED VIEW person_agg AS
                      LEFT OUTER JOIN person_depictions depict ON (p.ext_id=depict.ext_id)
                      LEFT OUTER JOIN person_same_as psa ON (p.ext_id=psa.ext_id)
                      JOIN authorships au ON (au.person_id=p.ext_id)
-                     JOIN validated_plays vp ON (pp.play_id=vp.ext_id)
+                     JOIN validated_plays vp ON (au.play_id=vp.ext_id)
        GROUP BY p.id;
 
 CREATE index person_agg_id_idx ON person_agg(id);
