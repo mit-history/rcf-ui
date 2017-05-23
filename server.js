@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 
+const compression = require('compression');
 const express = require('express');
 
 require('babel-register');
@@ -25,6 +26,7 @@ const {
 const app = express(),
       template = fs.readFileSync('index-template.html').toString().replace(/BASE_URL/g, process.env.BASE_URL || '');
 
+app.use(compression());
 
 app.use(buildURL(''), express.static('static'));
 
