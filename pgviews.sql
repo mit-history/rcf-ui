@@ -18,7 +18,7 @@ CREATE MATERIALIZED VIEW person_agg AS
                      LEFT OUTER JOIN person_depictions depict ON (p.ext_id=depict.ext_id)
                      LEFT OUTER JOIN person_same_as psa ON (p.ext_id=psa.ext_id)
                      JOIN authorships au ON (au.person_id=p.ext_id)
-                     JOIN validated_plays vp ON (au.play_id=vp.ext_id)
+                     JOIN validated_plays vp ON (au.play_id=vp.id)
        GROUP BY p.id;
 
 CREATE index person_agg_id_idx ON person_agg(id);
@@ -42,6 +42,7 @@ CREATE INDEX performances_play_id_idx ON performances(play_id);
 CREATE INDEX performances_register_id_idx ON performances(register_id);
 CREATE INDEX performances_date_idx ON performances(date);
 
+DROP TABLE IF EXISTS normalized_genres;
 CREATE TABLE normalized_genres (
     genre varchar(64),
     normalized varchar(64)
