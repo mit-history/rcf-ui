@@ -86,8 +86,8 @@ SELECT r.season, SUM(COALESCE(r.total_receipts_recorded_l, 0) * 240 +
                      COALESCE(r.total_receipts_recorded_s, 0) * 12 +
                      COALESCE(r.total_receipts_recorded_d, 0)) AS receipts
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
-                 JOIN play_person pp ON (rp.play_id=pp.play_id)
-WHERE pp.person_id=$1 GROUP BY 1 ORDER BY 1
+                 JOIN authorships pp ON (rp.play_id=pp.play_id)
+WHERE pp.ext_id=$1 GROUP BY 1 ORDER BY 1
 `, [id])
         .then(receipts => receipts.map(r => ({
             year: Number(r.season.split('-')[0]),
@@ -102,9 +102,9 @@ function authorGenres(id) {
 SELECT n.normalized as genre, COUNT(r.id) as nbplayed
 FROM registers as r JOIN register_plays as rp ON (r.id=rp.register_id)
      JOIN validated_plays as p ON (p.id=rp.play_id)
-     JOIN play_person as pp ON (pp.play_id=p.id)
+     JOIN authorships as pp ON (pp.play_id=p.id)
      JOIN normalized_genres AS n ON (p.genre=n.genre)
-WHERE pp.person_id=$1 GROUP BY 1 ORDER BY 2 DESC
+WHERE pp.ext_id=$1 GROUP BY 1 ORDER BY 2 DESC
 `, [id]);
 }
 
@@ -129,8 +129,8 @@ SELECT p.id, p.title, n.normalized AS genre, min(r.date) AS date_de_premiere,
                          COUNT(*) as nb_perf
 FROM registers as r JOIN register_plays as rp ON (r.id=rp.register_id)
 JOIN validated_plays as p ON (p.id=rp.play_id)
-JOIN  play_person as pp ON (pp.play_id=p.id) JOIN normalized_genres AS n ON(p.genre=n.genre)
-WHERE pp.person_id=$1 GROUP BY p.title, p.date_de_creation, p.genre, n.normalized, p.id ORDER BY p.title DESC
+JOIN  authorships as pp ON (pp.play_id=p.id) JOIN normalized_genres AS n ON(p.genre=n.genre)
+WHERE pp.ext_id=$1 GROUP BY p.title, p.date_de_creation, p.genre, n.normalized, p.id ORDER BY p.title DESC
 
 `, [id]).then(plays => plays.map(p => ({
     play_id: p.id,
@@ -202,7 +202,7 @@ function playPerformance(id) {
     return db.query(`
 SELECT r.season, count(*) AS nb_perfs
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
-                 JOIN play_person pp ON (rp.play_id=pp.play_id)
+                 JOIN authorships pp ON (rp.play_id=pp.play_id)
 WHERE rp.play_id=$1 GROUP BY 1 ORDER BY 1
 `, [id])
     .then(nb_perfs => nb_perfs.map(p => ({
@@ -219,8 +219,8 @@ SELECT p.id, p.acts, n.normalized as genre, pa.name AS author,
        p.musique_danse_machine
 FROM validated_plays AS p
   JOIN register_plays AS rp ON (p.id=rp.play_id)
-  JOIN play_person AS pp ON (pp.play_id=p.id)
-  JOIN person_agg AS pa ON (pp.person_id=pa.id)
+  JOIN authorships AS pp ON (pp.play_id=p.id)
+  JOIN person_agg AS pa ON (pp.ext_id=pa.id)
   JOIN normalized_genres AS n ON (p.genre=n.genre)
 WHERE p.id=$1
 `, [id])
@@ -244,8 +244,8 @@ SELECT p.id play_id, p.title play_title, n.normalized as genre,
        MIN(r.date) firstdate
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
      JOIN validated_plays p ON (rp.play_id=p.id)
-     JOIN play_person pp ON (p.id=pp.play_id)
-     JOIN person_agg pa ON (pp.person_id=pa.id)
+     JOIN authorships pp ON (p.id=pp.play_id)
+     JOIN person_agg pa ON (pp.id=pa.id)
      JOIN normalized_genres n ON (p.genre=n.genre)
 GROUP BY p.id, p.title, n.normalized, pa.id, pa.name
 ORDER BY nbperfs DESC, p.title;
@@ -268,7 +268,7 @@ SELECT r.season, r.date,
            COALESCE(r.total_receipts_recorded_s, 0) * 12 +
            COALESCE(r.total_receipts_recorded_d, 0)) AS receipts
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
-                 JOIN play_person pp ON (rp.play_id=pp.play_id)
+                 JOIN authorships pp ON (rp.play_id=pp.play_id)
 WHERE rp.play_id=$1 AND rp.reprise = TRUE
 GROUP BY r.season, r.date
 ORDER BY r.date
@@ -304,8 +304,8 @@ FROM
             row_number() OVER (PARTITION BY r.season ORDER BY COUNT(r.id) DESC) rank
      FROM registers r JOIN register_plays as rp ON r.id=rp.register_id
           JOIN validated_plays as p ON p.id=rp.play_id
-          JOIN play_person AS pp ON (pp.play_id=p.id)
-          JOIN person_agg AS pa ON (pp.person_id=pa.id)
+          JOIN authorships AS pp ON (pp.play_id=p.id)
+          JOIN person_agg AS pa ON (pp.ext_id=pa.id)
      WHERE rp.ordering=$1
      GROUP BY pa.id, pa.name, r.season ORDER BY r.season) as T
 WHERE T.rank=1
@@ -367,8 +367,8 @@ SELECT r.date, r.weekday, p.author, p.title, n.normalized as genre,
 FROM registers as r
      JOIN register_plays as rp ON r.id=rp.register_id
      JOIN validated_plays as p ON p.id=rp.play_id
-     JOIN play_person AS pp ON (pp.play_id=p.id)
-     JOIN person_agg AS pa ON (pp.person_id=pa.id)
+     JOIN authorships AS pp ON (pp.play_id=p.id)
+     JOIN person_agg AS pa ON (pp.ext_id=pa.id)
      JOIN normalized_genres AS n ON (p.genre=n.genre)
 WHERE r.season=$1
 ORDER BY r.date`, [season])
@@ -482,9 +482,9 @@ SELECT r.date, r.weekday, r.total_receipts_recorded_l receipts,
 FROM registers as r
      JOIN register_plays as rp ON r.id=rp.register_id
      JOIN validated_plays as p ON p.id=rp.play_id
-     JOIN play_person AS pp ON (pp.play_id=p.id)
+     JOIN authorships AS pp ON (pp.play_id=p.id)
      JOIN normalized_genres AS n ON (p.genre=n.genre)
-WHERE pp.person_id=$1 AND r.season=$2
+WHERE pp.ext_id=$1 AND r.season=$2
 ORDER BY r.date`, [author, season]);
 }
 
@@ -523,8 +523,8 @@ SELECT r.date, r.weekday, r.total_receipts_recorded_l receipts,
 FROM registers as r
      JOIN register_plays as rp ON r.id=rp.register_id
      JOIN validated_plays as p ON p.id=rp.play_id
-     JOIN play_person AS pp ON (pp.play_id=p.id)
-     JOIN person_agg AS pa ON (pp.person_id=pa.id)
+     JOIN authorships AS pp ON (pp.play_id=p.id)
+     JOIN person_agg AS pa ON (pp.ext_id=pa.id)
      JOIN normalized_genres AS n ON (p.genre=n.genre)
 WHERE r.date=$1
 ORDER BY rp.ordering`, [date])
