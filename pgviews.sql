@@ -14,11 +14,11 @@ CREATE MATERIALIZED VIEW person_agg AS
               array_agg(DISTINCT psa.url) AS ext_uris,
               array_agg(DISTINCT alt.label) AS alt_labels,
               array_agg(DISTINCT depict.url) AS depict_urls
-       FROM person p LEFT OUTER JOIN person_altlabels alt ON (p.id=alt.person_id)
-                     LEFT OUTER JOIN person_depictions depict ON (p.id=depict.person_id)
-                     LEFT OUTER JOIN person_same_as psa ON (p.id=psa.person_id)
-                     JOIN play_person pp ON (pp.person_id=p.id)
-                     JOIN validated_plays vp ON (pp.play_id=vp.id)
+       FROM people p LEFT OUTER JOIN person_altlabels alt ON (p.ext_id=alt.ext_id)
+                     LEFT OUTER JOIN person_depictions depict ON (p.ext_id=depict.ext_id)
+                     LEFT OUTER JOIN person_same_as psa ON (p.ext_id=psa.ext_id)
+                     JOIN authorships au ON (au.person_id=p.ext_id)
+                     JOIN validated_plays vp ON (au.play_id=vp.ext_id)
        GROUP BY p.id;
 
 CREATE index person_agg_id_idx ON person_agg(id);
@@ -34,8 +34,8 @@ CREATE MATERIALIZED VIEW performances AS
               rp.debut, rp.reprise, rp.ordering
        FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
                         JOIN validated_plays p ON (rp.play_id=p.id)
-                        JOIN play_person pp ON (pp.play_id=p.id)
-                        JOIN person a ON (pp.person_id=a.id);
+                        JOIN authorships au ON (au.play_id=p.id)
+                        JOIN people a ON (au.person_id=a.ext_id);
 
 CREATE INDEX performances_author_id_idx ON performances(author_id);
 CREATE INDEX performances_play_id_idx ON performances(play_id);
