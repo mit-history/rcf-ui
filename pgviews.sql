@@ -1,3 +1,6 @@
+DROP MATERIALIZED VIEW IF EXISTS performances;
+DROP MATERIALIZED VIEW IF EXISTS person_agg;
+DROP MATERIALIZED VIEW IF EXISTS validated_plays;
 
 CREATE MATERIALIZED VIEW validated_plays AS
        SELECT * FROM plays
@@ -43,6 +46,7 @@ CREATE INDEX performances_register_id_idx ON performances(register_id);
 CREATE INDEX performances_date_idx ON performances(date);
 
 DROP TABLE IF EXISTS normalized_genres;
+
 CREATE TABLE normalized_genres (
     genre varchar(64),
     normalized varchar(64)
