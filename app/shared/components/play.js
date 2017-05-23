@@ -60,7 +60,7 @@ export class PlayList extends Component {
                                                isKey:true, hidden:true}, 'ID'),
                         ce(TableHeaderColumn, {dataField: "title", dataSort: true,
                                                dataFormat: urlPlayFormatter,
-                                               width: '25',
+                                               width: '25%',
                                                filter: {
                                                    type: 'TextFilter',
                                                    placeholder: 'Rechercher un titre',
@@ -69,14 +69,14 @@ export class PlayList extends Component {
                         ce(TableHeaderColumn, {dataField: "author_name",
                                                dataSort: true, dataFormat:
                                                urlAuthorFormatter,
-                                               width: '25',
+                                               width: '25%',
                                                filter: {
                                                    type: 'TextFilter',
                                                    placeholder: 'Rechercher un auteur',
                                                    delay: 300},
                                               }, 'Auteur'),
                         ce(TableHeaderColumn, {dataField: "genre",
-                                               width: '10',
+                                               width: '10%',
                                                dataSort: true,
                                                dataFormat: urlGenreFormatter,
                                                filter: {
@@ -86,15 +86,15 @@ export class PlayList extends Component {
                                               }, 'Genre'),
                         ce(TableHeaderColumn, {dataField: "nbperfs",
                                                dataSort: true,
-                                               width: '15'},
+                                               width: '15%'},
                            'Nombre de représentations'),
                         ce(TableHeaderColumn, {dataField: "nbreprises",
-                                               width: '15',
+                                               width: '15%',
                                                dataSort: true,
                                                dataFormat: urlRepriseFormatter},
                            'Nombre de reprises'),
                         ce(TableHeaderColumn, {dataField: "firstdate",
-                                               width: '10',
+                                               width: '10%',
                                                dataFormat: urlRegisterFormatter},
                            'date de la première')
                        )));
