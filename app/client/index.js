@@ -1,8 +1,8 @@
 import {createElement as ce} from 'react';
 import {render} from 'react-dom';
 
-import Router from 'react-router/lib/Router';
-import history from 'react-router/lib/browserHistory';
+import Router from 'react-router/es/Router';
+import createHistory from 'history/lib/createBrowserHistory';
 
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
@@ -13,6 +13,7 @@ import {fetchingData} from '../shared/actions';
 import middlewareFactory from '../shared/middlewares';
 import {fetchers as clientFetchers} from './fetchers';
 
+const history = createHistory();
 
 const clientMiddleware = middlewareFactory(clientFetchers);
 
