@@ -1,4 +1,5 @@
-import {createElement as ce, Component, PropTypes} from 'react';
+import {createElement as ce, Component} from 'react';
+import PropTypes from 'prop-types';
 
 import {Card, CardTitle, CardText, Spinner} from 'react-mdl';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';

@@ -1,5 +1,6 @@
 /* global d3 */
-import {createElement as ce, Component, PropTypes} from 'react';
+import {createElement as ce, Component} from 'react';
+import PropTypes from 'prop-types';
 
 import {browserHistory} from 'react-router';
 
