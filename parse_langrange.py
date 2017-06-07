@@ -202,12 +202,12 @@ def align_authors(cnx):
         cursor.execute('DROP TABLE IF EXISTS rcf_lagrange_authors')
         cursor.execute('''
 CREATE TABLE rcf_lagrange_authors AS
-        SELECT pa.id rcf_id, la.id lagrange_id
+        SELECT pa.id person_id, la.id lagrange_id
         FROM person_agg pa, lagrange_authors la
         WHERE similarity(unaccent(lower(pa.givenname || ' ' || pa.familyname)), unaccent(lower(la.firstname || ' ' || la.lastname))) > 0.7
         ORDER BY pa.id
         ''')
-        cursor.execute('CREATE INDEX rcf_lagrange_authors_rcf_idx ON rcf_lagrange_authors(rcf_id)')
+        cursor.execute('CREATE INDEX rcf_lagrange_authors_rcf_idx ON rcf_lagrange_authors(person_id)')
         cursor.execute('CREATE INDEX rcf_lagrange_authors_lagrange_idx ON rcf_lagrange_authors(lagrange_id)')
         cursor.execute("INSERT INTO rcf_lagrange_authors VALUES(2, '96')")
         cursor.execute("INSERT INTO rcf_lagrange_authors VALUES(5, '944')")
