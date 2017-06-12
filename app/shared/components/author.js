@@ -167,12 +167,15 @@ function authorGalleryView({authorData}) {
     if(!hasImages) {
         return ce('div');
     }
-    const imageObjects = authorData.lagrangeImages.map(image => ({
-        imgurl: image.imgurl,
-        targeturl: image.url,
-        imgtitle: `${image.title} (${image.subtitle})`,
-        imgsrc: 'Illustration provenant de La Grange',
-    }));
+
+    // XXX comment lagrange images until the https://www.comedie-francaise.fr/ is fixed    
+    const imageObjects = [];
+    // const imageObjects = authorData.lagrangeImages.map(image => ({
+    //     imgurl: image.imgurl,
+    //     targeturl: image.url,
+    //     imgtitle: `${image.title} (${image.subtitle})`,
+    //     imgsrc: 'Illustration provenant de La Grange',
+    // }));
 
     authorData.depict_urls.forEach(image => {
         const imgurl = image;
