@@ -73,8 +73,22 @@ function registerMainCardView({register}) {
                       value: register.payment_notes, valueClass: 'notes'},
                      {label: 'Notes diverses',
                       value: register.misc_notes, valueClass: 'notes'},
-                     {label: 'Note éditeur',
-                      value: register.editor_notes, valueClass: 'notes'},
+                     {
+                         label: 'Note éditeur',
+                         value: register.editor_notes, valueClass: 'notes'
+                     },
+                     {
+                         label: 'Présence exceptionnelle',
+                         value: register.ex_attendance, valueClass: 'notes'
+                     },
+                     {
+                         label: 'Représentation exceptionelle',
+                         value: register.ex_representation, valueClass: 'notes'
+                     },
+                     {
+                         label: 'Lieu de représentation exceptionnel',
+                         value: register.ex_place, valueClass: 'notes'
+                     },
                  ])));
 }
 

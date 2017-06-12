@@ -517,6 +517,7 @@ function registerInfos(date) {
     return db.query(`
 SELECT r.date, r.weekday, r.total_receipts_recorded_l receipts,
        r.payment_notes, r.misc_notes, r.for_editor_notes,
+       rp.ex_attendance, rp.ex_representation, rp.ex_place,
        rp.ordering, rp.debut, rp.reprise,
        p.id play_id, p.title play_title, n.normalized play_genre,
        pa.id author_id, pa.name author_name
@@ -536,6 +537,9 @@ ORDER BY rp.ordering`, [date])
             payment_notes: rows[0].payment_notes,
             misc_notes: rows[0].misc_notes,
             editor_notes: rows[0].for_editor_notes,
+            ex_attendance: rows[0].ex_attendance,
+            ex_representation: rows[0].ex_representation,
+            ex_place: rows[0].ex_place,
             plays: rows.map(row => ({
                 id: row.play_id,
                 title: row.play_title,
