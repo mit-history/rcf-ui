@@ -9,7 +9,7 @@
     "build_production": "NODE_ENV=production webpack --progress",
     "watch": "webpack --progress -d --watch",
     "lint": "eslint --cache appjs || true",
-    "start": "node server.js",
+    "start": "TZ=UTC node server.js",
     "postinstall": "NODE_ENV=production webpack"
   },
   "author": "",
