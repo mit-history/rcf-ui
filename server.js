@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 
 const compression = require('compression');
@@ -22,6 +21,8 @@ const {
     fetchSeasons, fetchSeason, fetchSeasonGenreChord, fetchASeason, fetchHome,
     ftisearch, fetchGenres, fetchGenre, fetchRegister, fetchReprises,
 } = require('./app/server/database');
+
+const pkginfos = require('./package.json');
 
 const app = express(),
       template = fs.readFileSync('index-template.html').toString().replace(/BASE_URL/g, process.env.BASE_URL || '');
@@ -90,6 +91,10 @@ app.get(buildURL('/register/:id.json'), (req, res) => {
 app.get(buildURL('/search'), (req, res) => {
     ftisearch(req.query.q).then(results => res.json(results));
 });
+
+app.get(buildURL('/siteinfo'), (req, res) => {
+    res.send(pkginfos.version);
+})
 
 app.get(buildURL('*'), (req, res, next) => {
     serverRouter(req, res, next, template);
