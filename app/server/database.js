@@ -8,7 +8,7 @@ const db = pgp({
     database: process.env.POSTGRES_DB === undefined ? 'rcf_db' : process.env.POSTGRES_DB,
     user: process.env.POSTGRES_USER === undefined ? 'jbelin' : process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD === undefined ? 'jbelin' : process.env.POSTGRES_PASSWORD,
-    ssl: process.env.POSTGRES_SSL === undefined ? 'true' : process.env.POSTGRES_SSL,
+    ssl: process.env.POSTGRES_SSL === 'require',
     port: process.env.POSTGRES_PORT === undefined ? '5432' : process.env.POSTGRES_PORT
 });
 
