@@ -147,13 +147,14 @@ WHERE pp.ext_id=$1 GROUP BY p.title, p.date_de_creation, p.genre, n.normalized, 
 
 
 function fetchLagrangeImages(id) {
-    return db.query(`
-SELECT DISTINCT ld.url, ld.imgurl, ld.title, ld.title2, ld.subtitle
-FROM lagrange_doc_authors lda JOIN lagrange_docs ld ON (ld.id=lda.doc_id)
-     JOIN rcf_lagrange_authors rla ON (rla.lagrange_id=lda.aut_id)
-     JOIN person_agg pa ON (pa.id=rla.person_id)
-WHERE pa.id=$1 AND ld.imgurl != '';
-`, [id]);
+    return Promise.resolve([]);
+//     return db.query(`
+// SELECT DISTINCT ld.url, ld.imgurl, ld.title, ld.title2, ld.subtitle
+// FROM lagrange_doc_authors lda JOIN lagrange_docs ld ON (ld.id=lda.doc_id)
+//      JOIN rcf_lagrange_authors rla ON (rla.lagrange_id=lda.aut_id)
+//      JOIN person_agg pa ON (pa.id=rla.person_id)
+// WHERE pa.id=$1 AND ld.imgurl != '';
+// `, [id]);
 }
 
 
