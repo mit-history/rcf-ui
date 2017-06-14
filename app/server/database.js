@@ -247,7 +247,7 @@ SELECT p.id play_id, p.title play_title, n.normalized as genre,
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
      JOIN validated_plays p ON (rp.play_id=p.id)
      JOIN authorships pp ON (p.id=pp.play_id)
-     JOIN person_agg pa ON (pp.id=pa.id)
+     JOIN person_agg pa ON (pp.ext_id=pa.id)
      JOIN normalized_genres n ON (p.genre=n.genre)
 GROUP BY p.id, p.title, n.normalized, pa.id, pa.name
 ORDER BY nbperfs DESC, p.title;
