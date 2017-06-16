@@ -87,7 +87,7 @@ app.get(buildURL('/season/:id.json'), (req, res) => {
 
 app.get(buildURL('/aseason/:authorid/:season.json'), (req, res) => {
     fetchASeason(req.params.authorid, req.params.season).then(result =>
-        res.json(result),
+        res.json(result)
     );
 });
 
