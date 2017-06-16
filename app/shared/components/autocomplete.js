@@ -1,7 +1,7 @@
-import {createElement as ce, Component} from 'react';
+import { createElement as ce, Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {Textfield} from 'react-mdl';
+import { Textfield } from 'react-mdl';
 
 import classnames from 'classnames';
 
@@ -11,25 +11,24 @@ import Option from '../react-mdl-extra/Option';
 
 import KEYCODE from '../react-mdl-extra/keycodes';
 
-import {buildURL} from '../urls';
-
+import { buildURL } from '../urls';
 
 export function cfrsearch(term) {
     if (!term.length) {
         return Promise.resolve([]);
     }
-    return fetch(buildURL(`/search?q=${encodeURIComponent(term)}`))
-        .then(res => res.json());
+    return fetch(buildURL(`/search?q=${encodeURIComponent(term)}`)).then(res =>
+        res.json(),
+    );
 }
 
 export function authorsearch(term) {
-    return cfrsearch(term)
-        .then(results => results.filter(item => item.type === 'author'));
+    return cfrsearch(term).then(results =>
+        results.filter(item => item.type === 'author'),
+    );
 }
 
-
 class CFRAutoComplete extends Component {
-
     static propTypes = {
         align: PropTypes.string,
         className: PropTypes.string,
@@ -55,7 +54,12 @@ class CFRAutoComplete extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {value: null, focused: false, items: [], selectedIndex: null};
+        this.state = {
+            value: null,
+            focused: false,
+            items: [],
+            selectedIndex: null,
+        };
         this.keyDown = this.keyDown.bind(this);
         this.onItemClick = this.onItemClick.bind(this);
         this.onTextfieldChange = this.onTextfieldChange.bind(this);
@@ -72,22 +76,22 @@ class CFRAutoComplete extends Component {
     }
 
     onItemClick(newValue, item) {
-        const {value, onChange} = this.props;
+        const { value, onChange } = this.props;
         if (this.props.onItemClick) {
             this.props.onItemClick(item);
         }
-        this.setState({value: null, items: []});
+        this.setState({ value: null, items: [] });
         if (value !== newValue && onChange) {
             onChange(newValue);
         }
     }
 
     onTextfieldChange(e) {
-        const {onChange} = this.props;
+        const { onChange } = this.props;
         const value = e.target.value;
-        this.setState({value});
+        this.setState({ value });
         this.props.itemfetcher(value).then(suggestions => {
-            this.setState({items: suggestions});
+            this.setState({ items: suggestions });
         });
         if (onChange) {
             onChange(value);
@@ -95,16 +99,16 @@ class CFRAutoComplete extends Component {
     }
 
     onTextfieldFocus() {
-        const {value, onFocus} = this.props;
-        this.setState({focused: true});
+        const { value, onFocus } = this.props;
+        this.setState({ focused: true });
         if (onFocus) {
             onFocus(value);
         }
     }
 
     onTextfieldBlur() {
-        const {value, onBlur} = this.props;
-        this.setState({focused: false});
+        const { value, onBlur } = this.props;
+        this.setState({ focused: false });
         if (onBlur) {
             onBlur(value);
         }
@@ -117,18 +121,21 @@ class CFRAutoComplete extends Component {
         if (e.keyCode === KEYCODE.DOWN || e.keyCode === KEYCODE.UP) {
             let newState;
             if (e.keyCode === KEYCODE.DOWN) {
-                newState = this.state.selectedIndex === null ?
-                    0 :
-                    (this.state.selectedIndex + 1) % this.state.items.length;
+                newState = this.state.selectedIndex === null
+                    ? 0
+                    : (this.state.selectedIndex + 1) % this.state.items.length;
             } else {
-                newState = this.state.selectedIndex === null ?
-                    this.state.items.length - 1: this.state.selectedIndex - 1;
+                newState = this.state.selectedIndex === null
+                    ? this.state.items.length - 1
+                    : this.state.selectedIndex - 1;
                 if (newState < 0) {
                     newState += this.state.items.length;
                 }
             }
-            this.setState({selectedIndex: newState,
-                           value: this.state.items[newState].label});
+            this.setState({
+                selectedIndex: newState,
+                value: this.state.items[newState].label,
+            });
 
             e.preventDefault();
             e.stopPropagation();
@@ -139,7 +146,7 @@ class CFRAutoComplete extends Component {
                 if (this.props.onItemSelect) {
                     this.props.onItemSelect(item);
                 }
-                this.setState({value: null, items: []});
+                this.setState({ value: null, items: [] });
             } else {
                 console.log('should trigger search');
             }
@@ -150,45 +157,61 @@ class CFRAutoComplete extends Component {
 
     render() {
         const {
-            align, className, error, floatingLabel,
-            label, offset, readOnly,
-            onItemClick, onItemSelect,
+            align,
+            className,
+            error,
+            floatingLabel,
+            label,
+            offset,
+            readOnly,
+            onItemClick,
+            onItemSelect,
         } = this.props;
         let value = this.props.value;
-        const {focused, value: stateValue, items} = this.state
+        const { focused, value: stateValue, items } = this.state;
 
         // create options
         const children = items.map((item, idx) => {
             const value = item.id;
             const data = item.label;
-            return ce(Option, {key: `${item.type}${value}`, value: value, item}, data);
+            return ce(
+                Option,
+                { key: `${item.type}${value}`, value: value, item },
+                data,
+            );
         });
 
-        if (this.state.selectedIndex !== null && this.state.selectedIndex < items.length) {
+        if (
+            this.state.selectedIndex !== null &&
+            this.state.selectedIndex < items.length
+        ) {
             value = items[this.state.selectedIndex].id;
         }
         const item = items.find(item => item.id === value);
-        const data = item && item.label || '';
+        const data = (item && item.label) || '';
         const inputValue = typeof stateValue === 'string' ? stateValue : data;
         const inputProps = {
             error,
             floatingLabel,
             label,
-            ref: ref => this.input = ref,
+            ref: ref => (this.input = ref),
             type: 'text',
             onChange: this.onTextfieldChange,
             onFocus: this.onTextfieldFocus,
             onBlur: this.onTextfieldBlur,
-            value: inputValue || "",
+            value: inputValue || '',
         };
 
         // calculate main class
-        const mainClass = classnames({
-            'mdl-autocomplete': true,
-            'mdl-autocomplete--disabled': false,
-            'mdl-autocomplete--error': error,
-            'mdl-autocomplete--focused': focused,
-        }, className);
+        const mainClass = classnames(
+            {
+                'mdl-autocomplete': true,
+                'mdl-autocomplete--disabled': false,
+                'mdl-autocomplete--error': error,
+                'mdl-autocomplete--focused': focused,
+            },
+            className,
+        );
 
         // calculate dropdown props
         const dropdownProps = {
@@ -197,23 +220,35 @@ class CFRAutoComplete extends Component {
             target: ce(Textfield, inputProps),
             useTargetWidth: true,
         };
-        return ce('div', {className: mainClass},
-                  ce(Dropdown, dropdownProps,
-                     ce(OptionList, {value, onItemClick: this.onItemClick}, children)),
-                  ce('i', className: 'mdl-autocomplete__arrow'));
+        return ce(
+            'div',
+            { className: mainClass },
+            ce(
+                Dropdown,
+                dropdownProps,
+                ce(
+                    OptionList,
+                    { value, onItemClick: this.onItemClick },
+                    children,
+                ),
+            ),
+            ce('i', (className: 'mdl-autocomplete__arrow')),
+        );
     }
-
 }
 
-export default ({title, onItemClick, onItemSelect, itemfetcher}) => {
-    return ce('form', {action: '#', autoComplete: 'off'},
-              ce(CFRAutoComplete, {
-                  label: title || 'Search…',
-                  itemfetcher: itemfetcher || cfrsearch,
-                  floatingLabel: true,
-                  expandable: true,
-                  expandableIcon: 'search',
-                  onItemClick,
-                  onItemSelect,
-              }));
+export default ({ title, onItemClick, onItemSelect, itemfetcher }) => {
+    return ce(
+        'form',
+        { action: '#', autoComplete: 'off' },
+        ce(CFRAutoComplete, {
+            label: title || 'Search…',
+            itemfetcher: itemfetcher || cfrsearch,
+            floatingLabel: true,
+            expandable: true,
+            expandableIcon: 'search',
+            onItemClick,
+            onItemSelect,
+        }),
+    );
 };

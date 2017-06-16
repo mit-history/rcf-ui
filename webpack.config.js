@@ -3,20 +3,23 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const config = module.exports = {
+const config = (module.exports = {
     entry: {
         js: ['./app/client/index'],
-        vendor: ['react', 'react-dom',
-                 'react-redux',
-                 'react-bootstrap-table',
-                 'react-mdl'],
+        vendor: [
+            'react',
+            'react-dom',
+            'react-redux',
+            'react-bootstrap-table',
+            'react-mdl',
+        ],
     },
     module: {
         loaders: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader?cacheDirectory",
+                loader: 'babel-loader?cacheDirectory',
             },
         ],
     },
@@ -30,7 +33,7 @@ const config = module.exports = {
             filename: 'vendor.bundle.js',
         }),
         new webpack.DefinePlugin({
-            "process.env.BASE_URL": JSON.stringify(process.env.BASE_URL),
+            'process.env.BASE_URL': JSON.stringify(process.env.BASE_URL),
         }),
     ],
     output: {
@@ -38,9 +41,7 @@ const config = module.exports = {
         publicPath: `${process.env.BASE_URL || ''}/js/`,
         path: path.join(__dirname, '/static/js'),
     },
-};
-
-
+});
 
 if (process.env.NODE_ENV === 'production') {
     // install polyfills for production
@@ -48,9 +49,9 @@ if (process.env.NODE_ENV === 'production') {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.DefinePlugin({
-            "process.env": {
+            'process.env': {
                 NODE_ENV: JSON.stringify('production'),
             },
-        })
+        }),
     );
 }

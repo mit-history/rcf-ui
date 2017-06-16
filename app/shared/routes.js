@@ -1,12 +1,10 @@
 import AppComponent from './components';
-import {HomeView} from './containers/home';
-import {buildURL} from  './urls';
+import { HomeView } from './containers/home';
+import { buildURL } from './urls';
 
-
-function loadRoute(cb, name='default') {
-    return (module) => cb(null, module[name]);
+function loadRoute(cb, name = 'default') {
+    return module => cb(null, module[name]);
 }
-
 
 function errorLoading(err) {
     console.error('error while loading', err);
@@ -15,14 +13,14 @@ function errorLoading(err) {
 export default {
     component: AppComponent,
     path: buildURL('/'),
-    indexRoute: {component: HomeView},
+    indexRoute: { component: HomeView },
     childRoutes: [
         {
             path: 'authors',
             getComponent(location, cb) {
                 System.import('./containers/author')
                     .then(loadRoute(cb, 'AuthorList'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -30,7 +28,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/author')
                     .then(loadRoute(cb, 'AuthorPrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -38,7 +36,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/play')
                     .then(loadRoute(cb, 'PlayList'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -46,7 +44,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/play')
                     .then(loadRoute(cb, 'PlayPrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -54,7 +52,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/play')
                     .then(loadRoute(cb, 'RepriseList'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -62,7 +60,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/season')
                     .then(loadRoute(cb, 'SeasonList'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -70,7 +68,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/season')
                     .then(loadRoute(cb, 'SeasonPrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -78,7 +76,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/genre')
                     .then(loadRoute(cb, 'GenreList'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -86,7 +84,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/genre')
                     .then(loadRoute(cb, 'GenrePrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -94,7 +92,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/season')
                     .then(loadRoute(cb, 'ASeasonPrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
         {
@@ -102,7 +100,7 @@ export default {
             getComponent(location, cb) {
                 System.import('./containers/register')
                     .then(loadRoute(cb, 'RegisterPrimaryView'))
-                    .catch(errorLoading)
+                    .catch(errorLoading);
             },
         },
     ],

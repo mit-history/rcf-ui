@@ -1,8 +1,7 @@
-import {createElement as ce} from 'react';
+import { createElement as ce } from 'react';
 import LinkReactRouter from 'react-router/lib/Link';
 
-
-export function buildURL(url){
+export function buildURL(url) {
     let baseUrl = '';
     if (typeof window === 'undefined') {
         if (process.env.BASE_URL) {
@@ -14,6 +13,9 @@ export function buildURL(url){
     return baseUrl + url;
 }
 
-export function Link(props){
-  return ce(LinkReactRouter, Object.assign({}, props, {to: buildURL(props.to)}))
+export function Link(props) {
+    return ce(
+        LinkReactRouter,
+        Object.assign({}, props, { to: buildURL(props.to) }),
+    );
 }

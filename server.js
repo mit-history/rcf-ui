@@ -5,7 +5,6 @@ const express = require('express');
 
 require('babel-register');
 
-
 // mock System.import implementation used by webpack2 for node
 global.System = {
     import(path) {
@@ -13,19 +12,34 @@ global.System = {
     },
 };
 
-
-const {buildURL} = require('./app/shared/urls');
-const {default: serverRouter} = require('./app/server');
+const { buildURL } = require('./app/shared/urls');
+const { default: serverRouter } = require('./app/server');
 const {
-    pgp, fetchAuthors, fetchAuthor, fetchAuthorSerieDef, fetchPlays, fetchPlay,
-    fetchSeasons, fetchSeason, fetchSeasonGenreChord, fetchASeason, fetchHome,
-    ftisearch, fetchGenres, fetchGenre, fetchRegister, fetchReprises,
+    pgp,
+    fetchAuthors,
+    fetchAuthor,
+    fetchAuthorSerieDef,
+    fetchPlays,
+    fetchPlay,
+    fetchSeasons,
+    fetchSeason,
+    fetchSeasonGenreChord,
+    fetchASeason,
+    fetchHome,
+    ftisearch,
+    fetchGenres,
+    fetchGenre,
+    fetchRegister,
+    fetchReprises,
 } = require('./app/server/database');
 
 const pkginfos = require('./package.json');
 
 const app = express(),
-      template = fs.readFileSync('index-template.html').toString().replace(/BASE_URL/g, process.env.BASE_URL || '');
+    template = fs
+        .readFileSync('index-template.html')
+        .toString()
+        .replace(/BASE_URL/g, process.env.BASE_URL || '');
 
 app.use(compression());
 
@@ -72,7 +86,9 @@ app.get(buildURL('/season/:id.json'), (req, res) => {
 });
 
 app.get(buildURL('/aseason/:authorid/:season.json'), (req, res) => {
-    fetchASeason(req.params.authorid, req.params.season).then(result => res.json(result));
+    fetchASeason(req.params.authorid, req.params.season).then(result =>
+        res.json(result),
+    );
 });
 
 app.get(buildURL('/genres.json'), (req, res) => {
@@ -87,21 +103,19 @@ app.get(buildURL('/register/:id.json'), (req, res) => {
     fetchRegister(req.params.id).then(register => res.json(register));
 });
 
-
 app.get(buildURL('/search'), (req, res) => {
     ftisearch(req.query.q).then(results => res.json(results));
 });
 
 app.get(buildURL('/siteinfo'), (req, res) => {
     res.send(pkginfos.version);
-})
+});
 
 app.get(buildURL('*'), (req, res, next) => {
     serverRouter(req, res, next, template);
 });
 
-
-const server = app.listen(process.env.PORT || 3000, function () {
+const server = app.listen(process.env.PORT || 3000, function() {
     console.log(`app ready on port ${process.env.PORT || 3000}!`);
 });
 

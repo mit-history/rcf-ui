@@ -1,21 +1,19 @@
-import {createElement as ce, Component} from 'react';
+import { createElement as ce, Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {browserHistory} from 'react-router';
+import { browserHistory } from 'react-router';
 
-import {Card, CardTitle, CardText} from 'react-mdl';
+import { Card, CardTitle, CardText } from 'react-mdl';
 
 import Highcharts from 'highcharts';
 
-import {mdlclass} from '.';
-import {STYLES} from '../styles';
-import {buildURL} from '../urls';
+import { mdlclass } from '.';
+import { STYLES } from '../styles';
+import { buildURL } from '../urls';
 
-import AutoComplete, {authorsearch} from './autocomplete';
-
+import AutoComplete, { authorsearch } from './autocomplete';
 
 export class HighchartsComparator extends Component {
-
     constructor(props) {
         super(props);
         this.chart = null;
@@ -29,7 +27,7 @@ export class HighchartsComparator extends Component {
     }
 
     componentDidMount() {
-        const {urlformatter, seriedef} = this.props;
+        const { urlformatter, seriedef } = this.props;
         this.chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'seasonchart',
@@ -55,37 +53,48 @@ export class HighchartsComparator extends Component {
                     cursor: 'pointer',
                     point: {
                         events: {
-                            click: (evt) => {
+                            click: evt => {
                                 browserHistory.push(urlformatter(evt));
                             },
                         },
                     },
                 },
             },
-            series: [{
-                name: seriedef.name,
-                data: seriedef.data.map(x => [x.season, x.receipts]),
-            }],
+            series: [
+                {
+                    name: seriedef.name,
+                    data: seriedef.data.map(x => [x.season, x.receipts]),
+                },
+            ],
         });
     }
 
     render() {
-        return ce(Card, {className: mdlclass(12)},
-                  ce(CardTitle, {style: STYLES.titleChart}, this.props.plotTitle),
-                  ce('div', {id: 'comparator-autocomplete',
-                             className: 'mdl-cell mdl-cell--4-col mdl-cell--8-offset'},
-                     ce(AutoComplete, {
-                         title: 'Entrez un auteur pour comparer les recettes',
-                         onItemClick: this.addSerie,
-                         onItemSelect: this.addSerie,
-                         itemfetcher: authorsearch,
-                     })),
-                  ce(CardText, {style: {margin: "auto"}},
-                     ce('div', {id: 'seasonchart'})));
+        return ce(
+            Card,
+            { className: mdlclass(12) },
+            ce(CardTitle, { style: STYLES.titleChart }, this.props.plotTitle),
+            ce(
+                'div',
+                {
+                    id: 'comparator-autocomplete',
+                    className: 'mdl-cell mdl-cell--4-col mdl-cell--8-offset',
+                },
+                ce(AutoComplete, {
+                    title: 'Entrez un auteur pour comparer les recettes',
+                    onItemClick: this.addSerie,
+                    onItemSelect: this.addSerie,
+                    itemfetcher: authorsearch,
+                }),
+            ),
+            ce(
+                CardText,
+                { style: { margin: 'auto' } },
+                ce('div', { id: 'seasonchart' }),
+            ),
+        );
     }
-
 }
-
 
 HighchartsComparator.propTypes = {
     urlformatter: PropTypes.func,

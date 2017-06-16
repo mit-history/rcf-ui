@@ -1,15 +1,17 @@
-import {createElement as ce, Component} from 'react';
+import { createElement as ce, Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Highcharts from 'highcharts';
 
-
 export class Pie extends Component {
-
     componentDidMount() {
         const {
-            stats, id: container, colorfunc,
-            title, seriename, urlformatter,
+            stats,
+            id: container,
+            colorfunc,
+            title,
+            seriename,
+            urlformatter,
         } = this.props;
         const data = stats.map(s => ({
             y: Number(s.count),
@@ -30,16 +32,18 @@ export class Pie extends Component {
                     text: ' ',
                 },
             },
-            series: [{
-                name: seriename,
-                data,
-            }],
+            series: [
+                {
+                    name: seriename,
+                    data,
+                },
+            ],
             plotOptions: {
                 series: {
                     cursor: 'pointer',
                     point: {
                         events: {
-                            click: (evt) => {
+                            click: evt => {
                                 if (urlformatter) {
                                     urlformatter(evt);
                                 }
@@ -52,10 +56,9 @@ export class Pie extends Component {
     }
 
     render() {
-        return ce('div', {id: this.props.id});
+        return ce('div', { id: this.props.id });
     }
 }
-
 
 Pie.propTypes = {
     id: PropTypes.string,

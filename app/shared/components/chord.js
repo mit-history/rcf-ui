@@ -1,10 +1,9 @@
 /* global d3 */
 
-import {createElement as ce, Component} from 'react';
+import { createElement as ce, Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {genreColor} from '../styles';
-
+import { genreColor } from '../styles';
 
 function customChordLayout() {
     ////////////////////////////////////////////////////////////
@@ -22,22 +21,33 @@ function customChordLayout() {
     ////////////////////////////////////////////////////////////
 
     const π = Math.PI,
-          τ = 2 * π;
+        τ = 2 * π;
 
     var chord = {},
-        chords, groups, matrix, n, padding = 0,
-        sortGroups, sortSubgroups, sortChords;
+        chords,
+        groups,
+        matrix,
+        n,
+        padding = 0,
+        sortGroups,
+        sortSubgroups,
+        sortChords;
 
     function relayout() {
         var subgroups = {},
             groupSums = [],
             groupIndex = d3.range(n),
-            subgroupIndex = [], k, x, x0, i, j;
+            subgroupIndex = [],
+            k,
+            x,
+            x0,
+            i,
+            j;
         chords = [];
         groups = [];
-        k = 0, i = -1;
+        (k = 0), (i = -1);
         while (++i < n) {
-            x = 0, j = -1;
+            (x = 0), (j = -1);
             while (++j < n) {
                 x += matrix[i][j];
             }
@@ -58,24 +68,28 @@ function customChordLayout() {
             });
         }
         k = (τ - padding * n) / k;
-        x = 0, i = -1;
+        (x = 0), (i = -1);
         while (++i < n) {
-            x0 = x, j = -1;
+            (x0 = x), (j = -1);
             while (++j < n) {
-                var di = groupIndex[i], dj = subgroupIndex[di][j], v = matrix[di][dj], a0 = x, a1 = x += v * k;
-                subgroups[di + "-" + dj] = {
+                var di = groupIndex[i],
+                    dj = subgroupIndex[di][j],
+                    v = matrix[di][dj],
+                    a0 = x,
+                    a1 = (x += v * k);
+                subgroups[di + '-' + dj] = {
                     index: di,
                     subindex: dj,
                     startAngle: a0,
                     endAngle: a1,
-                    value: v
+                    value: v,
                 };
             }
             groups[di] = {
                 index: di,
                 startAngle: x0,
                 endAngle: x,
-                value: (x - x0) / k
+                value: (x - x0) / k,
             };
             x += padding;
         }
@@ -83,15 +97,20 @@ function customChordLayout() {
         while (++i < n) {
             j = i - 1;
             while (++j < n) {
-                var source = subgroups[i + "-" + j], target = subgroups[j + "-" + i];
+                var source = subgroups[i + '-' + j],
+                    target = subgroups[j + '-' + i];
                 if (source.value || target.value) {
-                    chords.push(source.value < target.value ? {
-                        source: target,
-                        target: source
-                    } : {
-                        source: source,
-                        target: target
-                    });
+                    chords.push(
+                        source.value < target.value
+                            ? {
+                                  source: target,
+                                  target: source,
+                              }
+                            : {
+                                  source: source,
+                                  target: target,
+                              },
+                    );
                 }
             }
         }
@@ -99,7 +118,10 @@ function customChordLayout() {
     }
     function resort() {
         chords.sort(function(a, b) {
-            return sortChords((a.source.value + a.target.value) / 2, (b.source.value + b.target.value) / 2);
+            return sortChords(
+                (a.source.value + a.target.value) / 2,
+                (b.source.value + b.target.value) / 2,
+            );
         });
     }
     chord.matrix = function(x) {
@@ -143,7 +165,6 @@ function customChordLayout() {
     return chord;
 }
 
-
 function stretchedChord() {
     ////////////////////////////////////////////////////////////
     /////////////// Custom Chord Function //////////////////////
@@ -177,20 +198,30 @@ function stretchedChord() {
             r: r,
             a0: [a0],
             a1: [a1],
-            p0: [ r * Math.cos(a0), r * Math.sin(a0)],
-            p1: [ r * Math.cos(a1), r * Math.sin(a1)],
+            p0: [r * Math.cos(a0), r * Math.sin(a0)],
+            p1: [r * Math.cos(a1), r * Math.sin(a1)],
         };
     }
 
     function arc(r, p, a) {
-        var sign = (p[0] >= 0 ? 1 : -1);
-        return "A" + r + "," + r + " 0 " + +(a > π) + ",1 " + (p[0] + sign*pullOutSize) + "," + p[1];
+        var sign = p[0] >= 0 ? 1 : -1;
+        return (
+            'A' +
+            r +
+            ',' +
+            r +
+            ' 0 ' +
+            +(a > π) +
+            ',1 ' +
+            (p[0] + sign * pullOutSize) +
+            ',' +
+            p[1]
+        );
     }
 
-
     function curve(p1) {
-        var sign = (p1[0] >= 0 ? 1 : -1);
-        return "Q 0,0 " + (p1[0] + sign*pullOutSize) + "," + p1[1];
+        var sign = p1[0] >= 0 ? 1 : -1;
+        return 'Q 0,0 ' + (p1[0] + sign * pullOutSize) + ',' + p1[1];
     }
 
     /*
@@ -213,13 +244,18 @@ function stretchedChord() {
         var s = subgroup(this, source, d, i),
             t = subgroup(this, target, d, i);
 
-        return "M" + (s.p0[0] + pullOutSize) + "," + s.p0[1] +
+        return (
+            'M' +
+            (s.p0[0] + pullOutSize) +
+            ',' +
+            s.p0[1] +
             arc(s.r, s.p1, s.a1 - s.a0) +
             curve(t.p0) +
             arc(t.r, t.p1, t.a1 - t.a0) +
             curve(s.p0) +
-            "Z";
-    }//chord
+            'Z'
+        );
+    } //chord
 
     chord.radius = function(v) {
         if (!arguments.length) return radius;
@@ -252,7 +288,6 @@ function stretchedChord() {
         return chord;
     };
 
-
     function d3_svg_chordRadius(d) {
         return d.radius;
     }
@@ -274,29 +309,41 @@ function stretchedChord() {
     }
 
     function d3_functor(v) {
-        return typeof v === "function" ? v : function() {
-            return v;
-        };
+        return typeof v === 'function'
+            ? v
+            : function() {
+                  return v;
+              };
     }
 
     return chord;
 }
 
-
 function initChord(config) {
     console.log('initChord', config);
-    const margin = {top: 20, right: 40, bottom: 20, left: 40},
-          width = 1900 - margin.left - margin.right, //document.querySelector(config.domcontainer).clientWidth - margin.left - margin.right,
-          height = 800 - margin.top - margin.bottom;
+    const margin = { top: 20, right: 40, bottom: 20, left: 40 },
+        width = 1900 - margin.left - margin.right, //document.querySelector(config.domcontainer).clientWidth - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom;
 
-    var svg = d3.select(config.domcontainer).append("svg")
-            .attr("width", (width + margin.left + margin.right))
-            .attr("height", (height + margin.top + margin.bottom));
+    var svg = d3
+        .select(config.domcontainer)
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
 
-    var wrapper = svg.append("g").attr("class", "chordWrapper")
-            .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+    var wrapper = svg
+        .append('g')
+        .attr('class', 'chordWrapper')
+        .attr(
+            'transform',
+            'translate(' +
+                (width / 2 + margin.left) +
+                ',' +
+                (height / 2 + margin.top) +
+                ')',
+        );
 
-    var outerRadius = Math.min(width, height) / 2  - 100,
+    var outerRadius = Math.min(width, height) / 2 - 100,
         innerRadius = outerRadius * 0.95,
         opacityDefault = 0.7, //default opacity of chords
         opacityLow = 0.02; //hover opacity of those chords not hovered over
@@ -308,53 +355,72 @@ function initChord(config) {
     //////////////////// Titles on top ///////////////////
     //////////////////////////////////////////////////////
 
-    var titleWrapper = svg.append("g").attr("class", "chordTitleWrapper"),
+    var titleWrapper = svg.append('g').attr('class', 'chordTitleWrapper'),
         titleOffset = 40,
         titleSeparate = 0;
 
     //Title    top left
-    titleWrapper.append("text")
-        .attr("class","title left")
-        .style("font-size", "16px")
-        .attr("x", (width/2 + margin.left - outerRadius - titleSeparate))
-        .attr("y", titleOffset)
-        .text("Première partie de soirée");
-    titleWrapper.append("line")
-        .attr("class","titleLine left")
-        .attr("x1", (width/2 + margin.left - outerRadius - titleSeparate)*0.6)
-        .attr("x2", (width/2 + margin.left - outerRadius - titleSeparate)*1.4)
-        .attr("y1", titleOffset+8)
-        .attr("y2", titleOffset+8);
+    titleWrapper
+        .append('text')
+        .attr('class', 'title left')
+        .style('font-size', '16px')
+        .attr('x', width / 2 + margin.left - outerRadius - titleSeparate)
+        .attr('y', titleOffset)
+        .text('Première partie de soirée');
+    titleWrapper
+        .append('line')
+        .attr('class', 'titleLine left')
+        .attr(
+            'x1',
+            (width / 2 + margin.left - outerRadius - titleSeparate) * 0.6,
+        )
+        .attr(
+            'x2',
+            (width / 2 + margin.left - outerRadius - titleSeparate) * 1.4,
+        )
+        .attr('y1', titleOffset + 8)
+        .attr('y2', titleOffset + 8);
     //Title top right
-    titleWrapper.append("text")
-        .attr("class","title right")
-        .style("font-size", "16px")
-        .attr("x", (width/2 + margin.left + outerRadius + titleSeparate))
-        .attr("y", titleOffset)
-        .text("Deuxième partie de soirée");
-    titleWrapper.append("line")
-        .attr("class","titleLine right")
-        .attr("x1", (width/2 + margin.left - outerRadius - titleSeparate)*0.6 + 2*(outerRadius + titleSeparate))
-        .attr("x2", (width/2 + margin.left - outerRadius - titleSeparate)*1.4 + 2*(outerRadius + titleSeparate))
-        .attr("y1", titleOffset+8)
-        .attr("y2", titleOffset+8);
+    titleWrapper
+        .append('text')
+        .attr('class', 'title right')
+        .style('font-size', '16px')
+        .attr('x', width / 2 + margin.left + outerRadius + titleSeparate)
+        .attr('y', titleOffset)
+        .text('Deuxième partie de soirée');
+    titleWrapper
+        .append('line')
+        .attr('class', 'titleLine right')
+        .attr(
+            'x1',
+            (width / 2 + margin.left - outerRadius - titleSeparate) * 0.6 +
+                2 * (outerRadius + titleSeparate),
+        )
+        .attr(
+            'x2',
+            (width / 2 + margin.left - outerRadius - titleSeparate) * 1.4 +
+                2 * (outerRadius + titleSeparate),
+        )
+        .attr('y1', titleOffset + 8)
+        .attr('y2', titleOffset + 8);
 
     ////////////////////////////////////////////////////////////
     /////////////////// Animated gradient //////////////////////
     ////////////////////////////////////////////////////////////
 
     const gradientIndex = {};
-    var defs = wrapper.append("defs");
+    var defs = wrapper.append('defs');
     function addGradient(source, target) {
         const gid = `gradient-${source}--${target}`;
         if (gradientIndex[gid] === undefined) {
-            var linearGradient = defs.append("linearGradient")
-                    .attr("id", gid)
-                    .attr("x1","0%")
-                    .attr("y1","0%")
-                    .attr("x2","100%")
-                    .attr("y2","0")
-                    .attr("spreadMethod", "reflect");
+            var linearGradient = defs
+                .append('linearGradient')
+                .attr('id', gid)
+                .attr('x1', '0%')
+                .attr('y1', '0%')
+                .attr('x2', '100%')
+                .attr('y2', '0')
+                .attr('spreadMethod', 'reflect');
 
             // linearGradient.append("animate")
             //     .attr("attributeName","x1")
@@ -372,18 +438,22 @@ function initChord(config) {
             //     .attr("dur","7s")
             //     .attr("repeatCount","indefinite");
 
-            linearGradient.append("stop")
-                .attr("offset","5%")
-                .attr("stop-color", config.colorscale(source));
-            linearGradient.append("stop")
-                .attr("offset","45%")
-                .attr("stop-color","#A3A3A3");
-            linearGradient.append("stop")
-                .attr("offset","55%")
-                .attr("stop-color","#A3A3A3");
-            linearGradient.append("stop")
-                .attr("offset","95%")
-                .attr("stop-color", config.colorscale(target));
+            linearGradient
+                .append('stop')
+                .attr('offset', '5%')
+                .attr('stop-color', config.colorscale(source));
+            linearGradient
+                .append('stop')
+                .attr('offset', '45%')
+                .attr('stop-color', '#A3A3A3');
+            linearGradient
+                .append('stop')
+                .attr('offset', '55%')
+                .attr('stop-color', '#A3A3A3');
+            linearGradient
+                .append('stop')
+                .attr('offset', '95%')
+                .attr('stop-color', config.colorscale(target));
         }
         return gid;
     }
@@ -393,44 +463,64 @@ function initChord(config) {
     ////////////////////////////////////////////////////////////
     //Calculate how far the Chord Diagram needs to be rotated clockwise to make the dummy
     //invisible chord center vertically
-    var offset = (2 * Math.PI) * (config.emptyStroke / (config.total + config.emptyStroke)) /4;
+    var offset =
+        2 *
+        Math.PI *
+        (config.emptyStroke / (config.total + config.emptyStroke)) /
+        4;
 
     //Custom sort function of the chords to keep them in the original order
     var chord = customChordLayout() //d3.layout.chord()
-            .padding(.02)
-            .sortChords(d3.descending) //which chord should be shown on top when chords cross. Now the biggest chord is at the bottom
-            .matrix(config.matrix);
+        .padding(0.02)
+        .sortChords(d3.descending) //which chord should be shown on top when chords cross. Now the biggest chord is at the bottom
+        .matrix(config.matrix);
 
-    var arc = d3.svg.arc()
-            .innerRadius(innerRadius)
-            .outerRadius(outerRadius)
-            .startAngle(startAngle) //startAngle and endAngle now include the offset in degrees
-            .endAngle(endAngle);
+    var arc = d3.svg
+        .arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius)
+        .startAngle(startAngle) //startAngle and endAngle now include the offset in degrees
+        .endAngle(endAngle);
 
     var path = stretchedChord() //Call the stretched chord function
-            .radius(innerRadius)
-            .startAngle(startAngle)
-            .endAngle(endAngle)
-            .pullOutSize(pullOutSize);
+        .radius(innerRadius)
+        .startAngle(startAngle)
+        .endAngle(endAngle)
+        .pullOutSize(pullOutSize);
 
     ////////////////////////////////////////////////////////////
     //////////////////// Draw outer Arcs ///////////////////////
     ////////////////////////////////////////////////////////////
-    var g = wrapper.selectAll("g.group")
-            .data(chord.groups)
-            .enter().append("g")
-            .attr("class", "group")
-            .on("mouseover", fade(opacityLow))
-            .on("mouseout", fade(opacityDefault));
+    var g = wrapper
+        .selectAll('g.group')
+        .data(chord.groups)
+        .enter()
+        .append('g')
+        .attr('class', 'group')
+        .on('mouseover', fade(opacityLow))
+        .on('mouseout', fade(opacityDefault));
 
-    g.append("path")
-        .style("stroke", function(d,i) { return (config.names[i] === "" ? "none" : config.colorscale(config.names[i])); })
-        .style("fill", function(d,i) { return (config.names[i] === "" ? "none" : config.colorscale(config.names[i])); })
-        .style("pointer-events", function(d,i) { return (config.names[i] === "" ? "none" : "auto"); })
-        .attr("d", arc)
-        .attr("transform", function(d) { //Pull the two slices apart
-            d.pullOutSize = pullOutSize * ( d.startAngle + 0.001 > Math.PI ? -1 : 1);
-            return "translate(" + d.pullOutSize + ',' + 0 + ")";
+    g
+        .append('path')
+        .style('stroke', function(d, i) {
+            return config.names[i] === ''
+                ? 'none'
+                : config.colorscale(config.names[i]);
+        })
+        .style('fill', function(d, i) {
+            return config.names[i] === ''
+                ? 'none'
+                : config.colorscale(config.names[i]);
+        })
+        .style('pointer-events', function(d, i) {
+            return config.names[i] === '' ? 'none' : 'auto';
+        })
+        .attr('d', arc)
+        .attr('transform', function(d) {
+            //Pull the two slices apart
+            d.pullOutSize =
+                pullOutSize * (d.startAngle + 0.001 > Math.PI ? -1 : 1);
+            return 'translate(' + d.pullOutSize + ',' + 0 + ')';
         });
 
     ////////////////////////////////////////////////////////////
@@ -439,69 +529,110 @@ function initChord(config) {
 
     //The text also needs to be displaced in the horizontal directions
     //And also rotated with the offset in the clockwise direction
-    g.append("text")
-        .each(function(d) { d.angle = ((d.startAngle + d.endAngle) / 2) + offset;})
-        .attr("dy", ".35em")
-        .attr("class", "titles")
-        .style("font-size", "10px")
-        .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-        .attr("transform", function(d) {
-            var c = arc.centroid(d);
-            return "translate(" + (c[0] + d.pullOutSize) + "," + c[1] + ")"
-                + "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-                + "translate(" + 20 + ",0)"
-                + (d.angle > Math.PI ? "rotate(180)" : "");
+    g
+        .append('text')
+        .each(function(d) {
+            d.angle = (d.startAngle + d.endAngle) / 2 + offset;
         })
-        .text(function(d,i) { return config.names[i]; })
+        .attr('dy', '.35em')
+        .attr('class', 'titles')
+        .style('font-size', '10px')
+        .attr('text-anchor', function(d) {
+            return d.angle > Math.PI ? 'end' : null;
+        })
+        .attr('transform', function(d) {
+            var c = arc.centroid(d);
+            return (
+                'translate(' +
+                (c[0] + d.pullOutSize) +
+                ',' +
+                c[1] +
+                ')' +
+                'rotate(' +
+                (d.angle * 180 / Math.PI - 90) +
+                ')' +
+                'translate(' +
+                20 +
+                ',0)' +
+                (d.angle > Math.PI ? 'rotate(180)' : '')
+            );
+        })
+        .text(function(d, i) {
+            return config.names[i];
+        })
         .call(wrapChord, 100);
 
     ////////////////////////////////////////////////////////////
     //////////////////// Draw inner chords /////////////////////
     ////////////////////////////////////////////////////////////
 
-    wrapper.selectAll("path.chord")
+    wrapper
+        .selectAll('path.chord')
         .data(chord.chords)
-        .enter().append("path")
-        .attr("class", "chord")
-        .style("stroke", "none")
-    //.style("fill", "#C4C4C4")
-        .style("fill", d => {
-            const gid = addGradient(config.names[d.target.index], config.names[d.source.index]);
+        .enter()
+        .append('path')
+        .attr('class', 'chord')
+        .style('stroke', 'none')
+        //.style("fill", "#C4C4C4")
+        .style('fill', d => {
+            const gid = addGradient(
+                config.names[d.target.index],
+                config.names[d.source.index],
+            );
             return `url(#${gid})`;
         })
-        .style("opacity", function(d) { return (config.names[d.source.index] === "" ? 0 : opacityDefault); }) //Make the dummy strokes have a zero opacity (invisible)
-        .style("pointer-events", function(d) { return (config.names[d.source.index] === "" ? "none" : "auto"); }) //Remove pointer events from dummy strokes
-        .attr("d", path)
-        .on("mouseover", fadeOnChord)
-        .on("mouseout", fade(opacityDefault));
+        .style('opacity', function(d) {
+            return config.names[d.source.index] === '' ? 0 : opacityDefault;
+        }) //Make the dummy strokes have a zero opacity (invisible)
+        .style('pointer-events', function(d) {
+            return config.names[d.source.index] === '' ? 'none' : 'auto';
+        }) //Remove pointer events from dummy strokes
+        .attr('d', path)
+        .on('mouseover', fadeOnChord)
+        .on('mouseout', fade(opacityDefault));
 
     ////////////////////////////////////////////////////////////
     ////////////////// Extra Functions /////////////////////////
     ////////////////////////////////////////////////////////////
 
     //Include the offset in de start and end angle to rotate the Chord diagram clockwise
-    function startAngle(d) { return d.startAngle + offset; }
-    function endAngle(d) { return d.endAngle + offset; }
+    function startAngle(d) {
+        return d.startAngle + offset;
+    }
+    function endAngle(d) {
+        return d.endAngle + offset;
+    }
 
     // Returns an event handler for fading a given chord group
     function fade(opacity) {
         return function(d, i) {
-            wrapper.selectAll("path.chord")
-                .filter(function(d) { return d.source.index !== i && d.target.index !== i && config.names[d.source.index] !== ""; })
-                .transition("fadeOnArc")
-                .style("opacity", opacity);
+            wrapper
+                .selectAll('path.chord')
+                .filter(function(d) {
+                    return (
+                        d.source.index !== i &&
+                        d.target.index !== i &&
+                        config.names[d.source.index] !== ''
+                    );
+                })
+                .transition('fadeOnArc')
+                .style('opacity', opacity);
         };
-    }//fade
+    } //fade
 
     // Fade function when hovering over chord
     function fadeOnChord(d) {
         var chosen = d;
-        wrapper.selectAll("path.chord")
-            .transition("fadeOnChord")
-            .style("opacity", function(d) {
-                return d.source.index === chosen.source.index && d.target.index === chosen.target.index ? opacityDefault : opacityLow;
+        wrapper
+            .selectAll('path.chord')
+            .transition('fadeOnChord')
+            .style('opacity', function(d) {
+                return d.source.index === chosen.source.index &&
+                    d.target.index === chosen.target.index
+                    ? opacityDefault
+                    : opacityLow;
             });
-    }//fadeOnChord
+    } //fadeOnChord
 
     /*Taken from http://bl.ocks.org/mbostock/7555321
      //Wraps SVG text*/
@@ -515,26 +646,34 @@ function initChord(config) {
                 lineHeight = 1.1, // ems
                 y = 0,
                 x = 0,
-                dy = parseFloat(text.attr("dy")),
-                tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+                dy = parseFloat(text.attr('dy')),
+                tspan = text
+                    .text(null)
+                    .append('tspan')
+                    .attr('x', x)
+                    .attr('y', y)
+                    .attr('dy', dy + 'em');
 
-            while (word = words.pop()) {
+            while ((word = words.pop())) {
                 line.push(word);
-                tspan.text(line.join(" "));
+                tspan.text(line.join(' '));
                 if (tspan.node().getComputedTextLength() > width) {
                     line.pop();
-                    tspan.text(line.join(" "));
+                    tspan.text(line.join(' '));
                     line = [word];
-                    tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    tspan = text
+                        .append('tspan')
+                        .attr('x', x)
+                        .attr('y', y)
+                        .attr('dy', ++lineNumber * lineHeight + dy + 'em')
+                        .text(word);
                 }
             }
         });
-    }//wrapChord
+    } //wrapChord
 }
 
-
 export class GenreChord extends Component {
-
     static propTypes = {
         chord: PropTypes.object,
     };
@@ -543,11 +682,16 @@ export class GenreChord extends Component {
         if (this.props.chord === null) {
             return ce('div', {}, 'no data yet (genre chord)');
         }
-        return ce('div', {id: 'gchord',
-                          key: 'd' + Math.round(Math.random() * 10000), // XXX
-                          ref: thediv => initChord(Object.assign({},
-                                                                 this.props.chord,
-                                                                 {domcontainer: '#gchord',
-                                                                  colorscale: genreColor}))});
+        return ce('div', {
+            id: 'gchord',
+            key: 'd' + Math.round(Math.random() * 10000), // XXX
+            ref: thediv =>
+                initChord(
+                    Object.assign({}, this.props.chord, {
+                        domcontainer: '#gchord',
+                        colorscale: genreColor,
+                    }),
+                ),
+        });
     }
 }

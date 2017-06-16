@@ -1,17 +1,17 @@
-import {createElement as ce} from 'react';
-import {render} from 'react-dom';
+import { createElement as ce } from 'react';
+import { render } from 'react-dom';
 
-import Router from "react-router/es/Router";
+import Router from 'react-router/es/Router';
 import { match, browserHistory } from 'react-router';
 
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import routes from '../shared/routes';
 import createStore from '../shared/store';
-import {fetchingData} from '../shared/actions';
+import { fetchingData } from '../shared/actions';
 import middlewareFactory from '../shared/middlewares';
-import {fetchers as clientFetchers} from './fetchers';
+import { fetchers as clientFetchers } from './fetchers';
 
 const clientMiddleware = middlewareFactory(clientFetchers);
 
@@ -27,12 +27,15 @@ browserHistory.listen(() => {
 
 const renderApp = () => {
     // Sync routes both on client and server
-    match({ history: browserHistory, routes }, (error, redirectLocation, renderProps) => {
-        render(
-            ce(Provider, {store}, ce(Router, renderProps, routes)),
-            document.querySelector("main"),
-        );
-    });
+    match(
+        { history: browserHistory, routes },
+        (error, redirectLocation, renderProps) => {
+            render(
+                ce(Provider, { store }, ce(Router, renderProps, routes)),
+                document.querySelector('main'),
+            );
+        },
+    );
 };
 
 renderApp();

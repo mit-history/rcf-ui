@@ -14,45 +14,44 @@ export const actionTypes = {
     FETCHING_DATA: 'FETCHING_DATA',
 };
 
-
-export function fetchingData(){
-  return {
-    type: actionTypes.FETCHING_DATA
-  }
+export function fetchingData() {
+    return {
+        type: actionTypes.FETCHING_DATA,
+    };
 }
 
 export function homeFetched(home) {
     return {
         type: actionTypes.HOME_FETCHED,
-        payload: home
+        payload: home,
     };
 }
 
 export function authorsFetched(authors) {
     return {
         type: actionTypes.AUTHORS_FETCHED,
-        payload: authors
+        payload: authors,
     };
 }
 
 export function authorFetched(author) {
     return {
         type: actionTypes.AUTHOR_FETCHED,
-        payload: author
+        payload: author,
     };
 }
 
 export function playsFetched(plays) {
     return {
         type: actionTypes.PLAYS_FETCHED,
-        payload: plays
+        payload: plays,
     };
 }
 
 export function playFetched(play) {
     return {
         type: actionTypes.PLAY_FETCHED,
-        payload: play
+        payload: play,
     };
 }
 
@@ -66,36 +65,35 @@ export function reprisesFetched(reprises) {
 export function seasonsFetched(seasons) {
     return {
         type: actionTypes.SEASONS_FETCHED,
-        payload: seasons
+        payload: seasons,
     };
 }
 
 export function seasonFetched(season) {
     return {
         type: actionTypes.SEASON_FETCHED,
-        payload: season
+        payload: season,
     };
 }
-
 
 export function aSeasonFetched(author, season) {
     return {
         type: actionTypes.ASEASON_FETCHED,
-        payload: {author, season},
+        payload: { author, season },
     };
 }
 
 export function genresFetched(genres) {
     return {
         type: actionTypes.GENRES_FETCHED,
-        payload: genres
+        payload: genres,
     };
 }
 
 export function genreFetched(genre) {
     return {
         type: actionTypes.GENRE_FETCHED,
-        payload: genre
+        payload: genre,
     };
 }
 
