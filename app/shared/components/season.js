@@ -344,7 +344,6 @@ function seasonMainCardView({ season, registers, firsts, reprises }) {
             className: 'section--center mdl-shadow--2dp',
             style: { justifyContent: 'center', marginBottom: '50px' },
         },
-        ce('h2', { style: { textAlign: 'center' } }, firstRegister.season),
         ce(
             Card,
             { className: mdlclass(12), style: { fontSize: '1em' } },
