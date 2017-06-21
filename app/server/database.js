@@ -104,7 +104,7 @@ GROUP BY 1,2,3`,
 /****** Authors *****/
 
 export function fetchAuthors() {
-    return db.query(`SELECT * FROM person_agg`);
+    return db.query(`SELECT COALESCE(NULLIF(familyname, ''), NULLIF(givenname, ''), name) as name, id, depict_urls from person_agg ORDER BY 1`);
 }
 
 function authorReceipts(id) {

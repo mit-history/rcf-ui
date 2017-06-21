@@ -17,6 +17,8 @@ import { mdlclass, numberWithSpaces } from '.';
 import { GenreChord } from './chord';
 import { SeasonCalendar } from './calendar';
 
+import sregmap from '../sregmap.json'
+
 function authorFormatter(author) {
     return ce(
         Link,
@@ -252,7 +254,7 @@ function seasonPlaysOverview({ registers }) {
     );
 }
 
-function seasonMainCardView({ registers, firsts, reprises }) {
+function seasonMainCardView({ season, registers, firsts, reprises }) {
     const firstRegister = registers[0],
         lastRegister = registers[registers.length - 1];
 
@@ -323,13 +325,25 @@ function seasonMainCardView({ registers, firsts, reprises }) {
         });
     }
 
+    if(sregmap[season]) {
+        properties.push({
+            label: 'Registre numérisé',
+            value: ce(Link,
+                {
+                    to: sregmap[season][0],
+                    title: 'Consulter le registre numérisé de saison '+season
+                },
+                'Consulter le registre numérisé de la saison '+season
+            ),
+        });
+    }
+
     return ce(
         'section',
         {
             className: 'section--center mdl-shadow--2dp',
             style: { justifyContent: 'center', marginBottom: '50px' },
         },
-        ce('h2', { style: { textAlign: 'center' } }, firstRegister.season),
         ce(
             Card,
             { className: mdlclass(12), style: { fontSize: '1em' } },
@@ -609,7 +623,7 @@ export class SeasonPrimaryView extends Component {
                     { style: { textAlign: 'center' } },
                     ...titleNavElements,
                 ),
-                ce('div', null, ce(seasonMainCardView, this.props.mainentity)),
+                ce('div', null, ce(seasonMainCardView, Object.assign({season: this.props.params.id}, this.props.mainentity))),
                 ce(
                     'div',
                     null,
