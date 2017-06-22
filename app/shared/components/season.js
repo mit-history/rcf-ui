@@ -17,7 +17,7 @@ import { mdlclass, numberWithSpaces } from '.';
 import { GenreChord } from './chord';
 import { SeasonCalendar } from './calendar';
 
-import sregmap from '../sregmap.json'
+import sregmap from '../sregmap'
 
 function authorFormatter(author) {
     return ce(
@@ -328,9 +328,9 @@ function seasonMainCardView({ season, registers, firsts, reprises }) {
     if(sregmap[season]) {
         properties.push({
             label: 'Registre numérisé',
-            value: ce(Link,
+            value: ce('a',
                 {
-                    to: sregmap[season][0],
+                    href : sregmap[season].base_url,
                     title: 'Consulter le registre numérisé de saison '+season
                 },
                 'Consulter le registre numérisé de la saison '+season
