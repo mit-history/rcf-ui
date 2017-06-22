@@ -80,6 +80,28 @@ function registerPlaysOverview({ plays }) {
     );
 }
 
+function imageComponent(imageList, date){
+    const hasImg = imageList.length > 0;
+    let imageComp = null;
+    let pagenum = null;
+    let rnum = null;
+
+    if(hasImg){
+        pagenum = /.*?_([0-9]+)\.jpg/.exec(imageList[0].url)[1];
+        rnum = imageList[0].rnum;
+
+        imageComp = ce('a', {
+            href: `http://hyperstudio.mit.edu/cfrp/flip_books/${rnum}/#page/${pagenum}/mode/1up`,
+            title: 'Consulter la page du registre pour la soirée du '+(date),
+            target: "_blank"
+        },
+        ce('img', {src: imageList[0].url, className: 'register-image' })
+        );
+    }
+
+    return imageComp;
+}
+
 function registerMainCardView({ register }) {
     const { date, weekday, receipts } = register;
     let { prevdate, nextdate } = register;
@@ -118,6 +140,7 @@ function registerMainCardView({ register }) {
             className: 'section--center mdl-grid',
             style: { justifyContent: 'center' },
         },
+        imageComponent(register.imageList, dateFormatter(date)),
         ce(
             Card,
             { className: mdlclass({ col: 3, tablet: 6, phone: 4 }) },

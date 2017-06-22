@@ -143,6 +143,11 @@
   padding-left: 1em;
 }
 
+.register-image {
+    height: 300px;
+    display: block;
+}
+
 @media (min-width: 500px) {
   .chord-container .explanation {
     width: 50%;
