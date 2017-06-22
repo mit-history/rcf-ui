@@ -105,7 +105,9 @@ GROUP BY 1,2,3`,
 /****** Authors *****/
 
 export function fetchAuthors() {
-    return db.query(`SELECT COALESCE(NULLIF(familyname, ''), NULLIF(givenname, ''), name) as name, id, depict_urls from person_agg ORDER BY 1`);
+    return db.query(
+        `SELECT COALESCE(NULLIF(familyname, ''), NULLIF(givenname, ''), name) as name, id, depict_urls from person_agg ORDER BY 1`,
+    );
 }
 
 function authorReceipts(id) {
@@ -664,41 +666,47 @@ ORDER BY rp.ordering`,
 }
 
 function registerImage(date) {
-    return db.query(
-`
+    return db
+        .query(
+            `
 SELECT r.date, r.season, ri.id, ri.filepath, ri.image_file_name
 FROM registers as r
     JOIN register_images ri ON (r.id=ri.register_id)
         WHERE date=$1
         AND ri.filepath is not null
         ORDER BY ri.id`,
-        [date],
-    ).then(results => {
-        const imageList = [];
+            [date],
+        )
+        .then(results => {
+            const imageList = [];
 
-        results.forEach(result => {
-            let baseUrl = sregmap[result.season].base_url;
-            let filepath = result.filepath.replace(/(.*?)[rv]?\.jpg/, '$1.jpg')
-            if(sregmap[result.season].pad1){
-                filepath = filepath.replace(/M119/g, 'M1119');
-            }
+            results.forEach(result => {
+                let baseUrl = sregmap[result.season].base_url;
+                let filepath = result.filepath.replace(
+                    /(.*?)[rv]?\.jpg/,
+                    '$1.jpg',
+                );
+                if (sregmap[result.season].pad1) {
+                    filepath = filepath.replace(/M119/g, 'M1119');
+                }
 
-            const imgInfo = {};
-            imgInfo.url = baseUrl + filepath;
-            imgInfo.rnum = sregmap[result.season].r_num;
-            imageList.push(imgInfo);
-        })
-        return imageList;
-    })
+                const imgInfo = {};
+                imgInfo.url = baseUrl + filepath;
+                imgInfo.rnum = sregmap[result.season].r_num;
+                imageList.push(imgInfo);
+            });
+            return imageList;
+        });
 }
-
 
 export function fetchRegister(date) {
     return Promise.all([
         registerInfos(date),
         prevnextDate(date),
-        registerImage(date)
-    ]).then(([infos, prevnext, imageList]) => Object.assign(infos, prevnext, {imageList}));
+        registerImage(date),
+    ]).then(([infos, prevnext, imageList]) =>
+        Object.assign(infos, prevnext, { imageList }),
+    );
 }
 
 /****** Search *****/
