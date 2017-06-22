@@ -166,6 +166,22 @@ function playMainCardView({ playData }) {
         marginTop: '15px',
     };
 
+    let overviewComp = ce('p', { style: { color: "#757575"} }, "Il n'y a pas de résumé à afficher.");
+
+    // TODO : add resume to the play
+    if (playData.resume) {
+        overviewComp = ce(
+            Card,
+            { className: mdlclass(12) },
+            ce(
+                CardText,
+                { style: { margin: 'auto' } },
+                ce('p', { style: { fontWeight: "bold", color:'#009687' } }, 'Résumé'),
+                ce('p', null, playData.resume),
+            ),
+        )
+    }
+
     const links = [
         {
             img:
@@ -215,7 +231,7 @@ function playMainCardView({ playData }) {
         },
         ce(
             'section',
-            { className: 'section--center', style: { marginBottom: '50px' } },
+            { className: 'section--center', style: { marginBottom: '30px' } },
             ce(
                 'h2',
                 { style: { textAlign: 'center' } },
@@ -226,6 +242,12 @@ function playMainCardView({ playData }) {
                 }),
                 playData.title,
             ),
+        ),
+        ce(
+            'section',
+            { className: 'section--center mdl-grid',
+            style: { justifyContent: 'center', marginBottom: '30px' } },
+            overviewComp,
         ),
         ce(
             'section',
