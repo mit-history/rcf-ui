@@ -45,6 +45,26 @@ CREATE INDEX performances_play_id_idx ON performances(play_id);
 CREATE INDEX performances_register_id_idx ON performances(register_id);
 CREATE INDEX performances_date_idx ON performances(date);
 
+
+DROP TABLE IF EXISTS external_resource;
+
+CREATE TABLE external_resource (
+    play_id int,
+    source varchar(512),
+    url varchar(512)
+);
+
+INSERT INTO external_resource (play_id, source, url) VALUES (5059, 'wikisource', 'https://fr.wikisource.org/wiki/L’Avare');
+INSERT INTO external_resource (play_id, source, url) VALUES (5059, 'gallica', 'http://gallica.bnf.fr/ark:/12148/bpt6k5819384q');
+
+INSERT INTO external_resource (play_id, source, url) VALUES (5427, 'wikisource', 'https://fr.wikisource.org/wiki/Tartuffe_ou_l’Imposteur/Édition_Louandre,_1910/Texte_entier');
+INSERT INTO external_resource (play_id, source, url) VALUES (5427, 'gallica', 'http://gallica.bnf.fr/ark:/12148/bpt6k70211m');
+INSERT INTO external_resource (play_id, source, url) VALUES (5427, 'data.bnf', 'http://data.bnf.fr/ark:/12148/cb11939541m#frbr:Work');
+INSERT INTO external_resource (play_id, source, url) VALUES (5427, 'libretheatre', 'http://libretheatre.fr/tartuffe-de-moliere/, https://fr.wikipedia.org/wiki/Le_Tartuffe_ou_l%27Imposteur');
+
+INSERT INTO external_resource (play_id, source, url) VALUES (5426, 'gallica', 'http://gallica.bnf.fr/ark:/12148/bpt6k62007233');
+
+
 DROP TABLE IF EXISTS normalized_genres;
 
 CREATE TABLE normalized_genres (
