@@ -207,6 +207,93 @@ function playMainCardView({ playData }) {
         },
     ];
 
+
+    let resourceComp = null;
+    const onlineComps = [];
+    const labels = {
+        'gallica': 'Lien vers une édition :',
+        'wikisource': 'Texte en ligne :',
+        'autre': 'Autre resources :'
+    };
+    const resources = {}
+    resources['wikisource'] = [];
+    resources['gallica'] = [];
+    resources['autre'] = [];
+    const labelStyle = {
+        fontWeight: 'bold',
+        color: '#009688'
+    };
+
+    if (playData.ext_resources.length > 0) {
+        const hasThumbnail = playData.ext_resources.filter(x => x.source === 'gallica')
+
+        let thumbnailComp = null;
+        if(hasThumbnail) {
+            thumbnailComp = ce(
+                'img', { src:`${hasThumbnail[0].url}.thumbnail`, style: { height: '250px', float: 'left'} }
+            )
+        }
+
+        playData.ext_resources.forEach(resource => {
+            if (resource.source === 'gallica' || resource.source === 'wikisource') {
+                resources[resource.source].push({
+                    'source': resource.source,
+                    'url': resource.url
+                })
+            }else {
+                resources['autre'].push({
+                    'source': resource.source,
+                    'url': resource.url
+                })
+            }
+        })
+
+        for (let label in labels) {
+            if(resources[label].length === 0) continue;
+
+            const links = [];
+            resources[label].forEach(resource => {
+                links.push(
+                    ce(
+                        'a',
+                        {
+                            href: resource.url,
+                            target: '_blank',
+                            style: { color:'#757575', display: 'block' }
+                        },
+                        resource.source
+                ))
+            });
+            onlineComps.push(
+                ce(
+                    'p',
+                    { style: labelStyle, key: label},
+                    labels[label],
+                    ...links
+                )
+            );
+        }
+
+
+
+        resourceComp = ce(
+            'section', null,
+            ce(
+                Card,
+                { className: mdlclass(12) },
+                ce(
+                    CardText,
+                    { style: { margin: 'auto' } },
+                    thumbnailComp,
+                    ce('div',
+                    { style: { paddingLeft: '20px', float: 'left' } },
+                    onlineComps
+                    ),
+                ),
+            )
+        )
+    }
+
     return ce(
         'section',
         {
@@ -262,6 +349,7 @@ function playMainCardView({ playData }) {
                 );
             }),
         ),
+        resourceComp,
     );
 }
 
