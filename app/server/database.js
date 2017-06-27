@@ -270,6 +270,18 @@ WHERE rp.play_id=$1 GROUP BY 1 ORDER BY 1
         );
 }
 
+function playExternalResources(id) {
+    return db.query(
+        `
+SELECT ex.source, ex.url
+FROM validated_plays AS p
+  JOIN external_resource AS ex ON (p.id=ex.play_id)
+WHERE p.id=$1
+`,
+        [id],
+    );
+}
+
 export function fetchPlay(id) {
     return db
         .query(
@@ -290,6 +302,11 @@ WHERE p.id=$1
         .then(playData => {
             const queries = [
                 mapPromiseToStore(playData, playPerformance(id), 'nb_perfs'),
+                mapPromiseToStore(
+                    playData,
+                    playExternalResources(id),
+                    'ext_resources',
+                ),
             ];
             return Promise.all(queries).then(() => playData);
         });
