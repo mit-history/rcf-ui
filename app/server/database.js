@@ -254,7 +254,7 @@ function playPerformance(id) {
     return db
         .query(
             `
-SELECT r.season, count(*) AS nb_perfs
+SELECT r.season, count(distinct(rp.id)) AS nb_perfs
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
                  JOIN authorships pp ON (rp.play_id=pp.play_id)
 WHERE rp.play_id=$1 AND r.verification_state_id = 1 GROUP BY 1 ORDER BY 1
