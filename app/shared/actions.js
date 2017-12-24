@@ -5,6 +5,7 @@ export const actionTypes = {
     PLAYS_FETCHED: 'PLAYS_FETCHED',
     PLAY_FETCHED: 'PLAY_FETCHED',
     REPRISES_FETCHED: 'REPRISES_FETCHED',
+    ALL_REPRISES_FETCHED: 'ALL_REPRISES_FETCHED',
     SEASONS_FETCHED: 'SEASONS_FETCHED',
     SEASON_FETCHED: 'SEASON_FETCHED',
     ASEASON_FETCHED: 'ASEASON_FETCHED',
@@ -58,6 +59,13 @@ export function playFetched(play) {
 export function reprisesFetched(reprises) {
     return {
         type: actionTypes.REPRISES_FETCHED,
+        payload: reprises,
+    };
+}
+
+export function allReprisesFetched(reprises) {
+    return {
+        type: actionTypes.ALL_REPRISES_FETCHED,
         payload: reprises,
     };
 }

@@ -5,7 +5,7 @@ import { Card, CardTitle, CardText, Spinner } from 'react-mdl';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import Highcharts from 'highcharts';
 
-import { mdlclass } from '.';
+import { mdlclass, urlSeasonFormatter } from '.';
 import { dateFormatter } from '..';
 import { Link } from '../urls';
 import { STYLES } from '../styles';
@@ -32,10 +32,6 @@ function urlGenreFormatter(cell) {
 function urlRegisterFormatter(cell, row) {
     const date = dateFormatter(cell);
     return ce(Link, { to: `/register/${date}` }, date);
-}
-
-function urlSeasonFormatter(cell) {
-    return ce(Link, { to: `/season/${cell}` }, `${cell}`);
 }
 
 export class PlayList extends Component {

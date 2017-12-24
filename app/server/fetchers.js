@@ -13,6 +13,7 @@ import {
     fetchGenre,
     fetchRegister,
     fetchReprises,
+    fetchAllReprises,
 } from './database';
 
 export const fetchers = {
@@ -24,6 +25,8 @@ export const fetchers = {
     fetchPlays: params => fetchPlays(),
     fetchPlay: params => fetchPlay(params.id),
     fetchReprises: params => fetchReprises(params.play),
+
+    fetchAllReprises: params => fetchAllReprises(params.play),
 
     fetchSeasons: params => fetchSeasons(),
     fetchSeason: params => fetchSeason(params.id),

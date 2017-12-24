@@ -103,5 +103,13 @@ export default {
                     .catch(errorLoading);
             },
         },
+        {
+            path: 'reprises',
+            getComponent(location, cb) {
+                System.import('./containers/reprise')
+                    .then(loadRoute(cb, 'RepriseList'))
+                    .catch(errorLoading);
+            },
+        },
     ],
 };

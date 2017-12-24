@@ -711,6 +711,39 @@ export function fetchRegister(date) {
     );
 }
 
+export function fetchAllReprises() {
+    return db.query(`
+SELECT T.* FROM (
+    SELECT rp.id, p.id play_id, p.title play_title, n.normalized as genre,
+        pa.id author_id, pa.name author_name,
+        COALESCE(r.total_receipts_recorded_l, 0) receipts,
+    --    COALESCE(r.total_receipts_recorded_l, 0) * 240 +
+    --    COALESCE(r.total_receipts_recorded_s, 0) * 12 +
+    --    COALESCE(r.total_receipts_recorded_d, 0) AS receipts,
+        r.date, r.season,
+        row_number() OVER (PARTITION BY r.season, p.id ORDER BY r.date)
+    FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
+    JOIN validated_plays p ON (rp.play_id=p.id)
+    JOIN authorships pp ON (p.id=pp.play_id)
+    JOIN person_agg pa ON (pp.ext_id=pa.id)
+    JOIN normalized_genres n ON (p.genre=n.genre)
+    WHERE r.verification_state_id = 1 AND rp.reprise=TRUE
+    ORDER BY r.date
+    ) AS T
+WHERE T.row_number = 1;
+    `).then(results => {
+        const processed = [];
+        for (const row of results) {
+            processed.push(row);
+        }
+        return processed;
+        });
+    // return Promise.resolve([
+    //     { id: 1, play_id: 12, play_title: 'foo', date: '1693/02/03', receipts: 3000, author_id:  1, author_name: 'Jean' },
+    //     { id: 2, play_id: 13, play_title: 'bar', date: '1693/02/04', receipts: 3500, author_id:  1, author_name: 'Jean' },
+    // ]);
+}
+
 /****** Search *****/
 
 function searchAuthors(term) {

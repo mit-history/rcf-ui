@@ -34,6 +34,18 @@ export function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
+export function urlSeasonFormatter(cell) {
+    return ce(Link, { to: `/season/${cell}` }, `${cell}`);
+}
+
+export function urlPlayFormatter(cell, row) {
+    return ce(Link, { to: `/play/${row.play_id}` }, cell);
+}
+
+export function authorFormatter(cell, row) {
+    return ce(Link, { to: `/author/${row.author_id}` }, cell);
+}
+
 export default ({ children }) => {
     function createNavLinkStyle(currentPath) {
         let navLinkStyle = {

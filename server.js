@@ -31,6 +31,7 @@ const {
     fetchGenre,
     fetchRegister,
     fetchReprises,
+    fetchAllReprises,
 } = require('./app/server/database');
 
 const pkginfos = require('./package.json');
@@ -63,6 +64,10 @@ app.get(buildURL('/author/:id.json'), (req, res) => {
 
 app.get(buildURL('/plays.json'), (req, res) => {
     fetchPlays().then(plays => res.json(plays));
+});
+
+app.get(buildURL('/reprises.json'), (req, res) => {
+    fetchAllReprises().then(reprises => res.json(reprises));
 });
 
 app.get(buildURL('/play/:play/reprises.json'), (req, res) => {

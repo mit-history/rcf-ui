@@ -18,6 +18,11 @@ export const fetchers = {
             res.json(),
         ),
 
+    fetchAllReprises: params =>
+        fetch(buildURL(`/reprises.json`)).then(res =>
+            res.json(),
+        ),
+
     fetchSeasons: params =>
         fetch(buildURL('/seasons.json')).then(res => res.json()),
     fetchSeason: params =>

@@ -35,6 +35,12 @@ export default (state = {}, action) => {
                 loading: false,
             });
             break;
+        case actionTypes.ALL_REPRISES_FETCHED:
+            return Object.assign({}, state, {
+                reprises: action.payload,
+                loading: false,
+            });
+            break;
         case actionTypes.SEASONS_FETCHED:
             return Object.assign({}, state, { seasons: action.payload });
             break;
