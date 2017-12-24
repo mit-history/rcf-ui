@@ -25,31 +25,19 @@ const db = pgp({
 /****** Home *****/
 
 function nbAuthors() {
-    return db
-        .query('SELECT COUNT(id) from person_agg')
-        .then(results => results[0].count);
+    return db.one('SELECT COUNT(id) from person_agg', [], a => +a.count);
 }
 
 function nbGenres() {
-    return db
-        .query(
-            'SELECT count(distinct n.normalized) from validated_plays AS p JOIN normalized_genres AS n ON (p.genre=n.genre)',
-        )
-        .then(results => results[0].count);
+    return db.one('SELECT count(distinct n.normalized) from validated_plays AS p JOIN normalized_genres AS n ON (p.genre=n.genre)', [], a => +a.count);
 }
 
 function nbPlays() {
-    return db
-        .query(
-            "SELECT COUNT(validated_plays.id) FROM validated_plays WHERE validated_plays.title != ''",
-        )
-        .then(results => results[0].count);
+    return db.one('SELECT COUNT(validated_plays.id) FROM validated_plays WHERE validated_plays.title != $1', '', a => +a.count);
 }
 
 function nbSeasons() {
-    return db
-        .query('SELECT count(distinct season) from registers')
-        .then(results => results[0].count);
+    return db.one('SELECT count(distinct season) from registers', [], a => +a.count);
 }
 
 export function fetchHome() {
@@ -67,7 +55,7 @@ export function fetchHome() {
 /****** Genres *****/
 
 export function fetchGenres() {
-    return db.query(`
+    return db.any(`
 SELECT distinct n.normalized AS genre, count(p.id) AS nb_plays
 FROM validated_plays AS p JOIN normalized_genres AS n ON (p.genre=n.genre)
 WHERE n.normalized != ''
@@ -76,7 +64,7 @@ GROUP BY 1`);
 
 export function fetchGenre(id) {
     return db
-        .query(
+        .map(
             `
 SELECT distinct n.normalized, p.id, p.title,
        SUM(COALESCE(r.total_receipts_recorded_l, 0) * 240 +
@@ -89,30 +77,27 @@ FROM validated_plays AS p
      JOIN registers AS r ON (rp.register_id = r.id)
 WHERE p.genre = n.genre AND n.normalized = $1 AND r.verification_state_id = 1
 GROUP BY 1,2,3`,
-            [id],
-        )
-        .then(genre =>
-            genre.map(g => ({
+            [id],        
+            g => ({
                 genre_id: g.normalized,
                 play_id: g.id,
                 title: g.title,
                 receipts: Math.round(parseInt(g.receipts / 240)),
-                nb_perfs: parseInt(g.nb_perfs),
-            })),
-        );
+                nb_perfs: parseInt(g.nb_perfs)
+            }));
 }
 
 /****** Authors *****/
 
 export function fetchAuthors() {
-    return db.query(
+    return db.any(
         `SELECT COALESCE(NULLIF(familyname, ''), NULLIF(givenname, ''), name) as name, id, depict_urls from person_agg ORDER BY 1`,
     );
 }
 
 function authorReceipts(id) {
     return db
-        .query(
+        .map(
             `
 SELECT r.season, SUM(COALESCE(r.total_receipts_recorded_l, 0) * 240 +
                      COALESCE(r.total_receipts_recorded_s, 0) * 12 +
@@ -122,18 +107,15 @@ FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
 WHERE pp.ext_id=$1 AND r.verification_state_id = 1 GROUP BY 1 ORDER BY 1
 `,
             [id],
-        )
-        .then(receipts =>
-            receipts.map(r => ({
+            r => ({
                 year: Number(r.season.split('-')[0]),
                 season: r.season,
                 receipts: Math.round(Number(r.receipts / 240)),
-            })),
-        );
+            }));
 }
 
 function authorGenres(id) {
-    return db.query(
+    return db.any(
         `
 SELECT n.normalized as genre, COUNT(r.id) as nbplayed
 FROM registers as r JOIN register_plays as rp ON (r.id=rp.register_id)
@@ -147,7 +129,7 @@ WHERE pp.ext_id=$1 GROUP BY 1 ORDER BY 2 DESC
 }
 
 function authorCoplayed(id) {
-    return db.query(
+    return db.any(
         `
 SELECT p1.author_id, p2.author_id, p2.author_name, COUNT(*)
 FROM performances p1 JOIN performances p2 ON (p1.date=p2.date)
@@ -160,7 +142,7 @@ GROUP BY 1,2,3 ORDER BY 4 DESC
 
 function authorPlaysOverview(id) {
     return db
-        .query(
+        .map(
             `
 SELECT p.id, p.title, n.normalized AS genre, min(r.date) AS date_de_premiere,
                          SUM(COALESCE(r.total_receipts_recorded_l, 0)) * 240 +
@@ -176,9 +158,7 @@ WHERE r.verification_state_id = 1 AND pp.ext_id=$1 GROUP BY p.title, p.date_de_c
 
 `,
             [id],
-        )
-        .then(plays =>
-            plays.map(p => ({
+            p => ({
                 play_id: p.id,
                 title: p.title,
                 genre: p.genre,
@@ -187,8 +167,7 @@ WHERE r.verification_state_id = 1 AND pp.ext_id=$1 GROUP BY p.title, p.date_de_c
                 nb_perf: parseInt(p.nb_perf),
                 total_1: parseInt(p.total_1),
                 total_2: parseInt(p.total_2),
-            })),
-        );
+            }));
 }
 
 function fetchLagrangeImages(id) {
@@ -210,9 +189,7 @@ function mapPromiseToStore(store, promise, property) {
 }
 
 function fetchAuthorInfos(id) {
-    return db
-        .query('SELECT * FROM person_agg where id=$1', [id])
-        .then(records => records[0]);
+    return db.oneOrNone('SELECT * FROM person_agg where id = $1', [id]);
 }
 
 export function fetchAuthor(id) {
@@ -252,7 +229,7 @@ export function fetchAuthorSerieDef(id) {
 
 function playPerformance(id) {
     return db
-        .query(
+        .map(
             `
 SELECT r.season, count(distinct(rp.id)) AS nb_perfs
 FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
@@ -260,19 +237,16 @@ FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
 WHERE rp.play_id=$1 AND r.verification_state_id = 1 GROUP BY 1 ORDER BY 1
 `,
             [id],
-        )
-        .then(nb_perfs =>
-            nb_perfs.map(p => ({
+            p => ({
                 year: Number(p.season.split('-')[0]),
                 season: p.season,
                 nb_perfs: Number(p.nb_perfs),
-            })),
-        );
+            }));
 }
 
 export function fetchPlay(id) {
     return db
-        .query(
+        .oneOrNone(
             `
 SELECT p.id, p.acts, n.normalized as genre, pa.name AS author,
        pa.id as author_id, p.prose_vers, p.prologue, p.title,
@@ -286,7 +260,6 @@ WHERE p.id=$1
 `,
             [id],
         )
-        .then(records => records[0])
         .then(playData => {
             const queries = [
                 mapPromiseToStore(playData, playPerformance(id), 'nb_perfs'),
@@ -297,7 +270,7 @@ WHERE p.id=$1
 
 export function fetchPlays() {
     return db
-        .query(
+        .map(
             `
 SELECT p.id play_id, p.title play_title, n.normalized as genre,
        pa.id author_id, pa.name author_name,
@@ -312,10 +285,8 @@ FROM registers r JOIN register_plays rp ON (r.id=rp.register_id)
 WHERE r.verification_state_id = 1
 GROUP BY p.id, p.title, n.normalized, pa.id, pa.name
 ORDER BY nbperfs DESC, p.title;
-`,
-        )
-        .then(rows =>
-            rows.map(row => ({
+`, [],
+        row => ({
                 id: row.play_id,
                 title: row.play_title,
                 genre: row.genre,
@@ -324,8 +295,7 @@ ORDER BY nbperfs DESC, p.title;
                 nbreprises: Number(row.nbreprises),
                 nbperfs: Number(row.nbperfs),
                 firstdate: row.firstdate,
-            })),
-        );
+            }));
 }
 
 export function fetchReprises(playId) {
