@@ -77,7 +77,7 @@ FROM validated_plays AS p
      JOIN registers AS r ON (rp.register_id = r.id)
 WHERE p.genre = n.genre AND n.normalized = $1 AND r.verification_state_id = 1
 GROUP BY 1,2,3`,
-            [id],        
+            [id],
             g => ({
                 genre_id: g.normalized,
                 play_id: g.id,
@@ -246,7 +246,7 @@ WHERE rp.play_id=$1 AND r.verification_state_id = 1 GROUP BY 1 ORDER BY 1
 
 export function fetchPlay(id) {
     return db
-        .oneOrNone(
+        .query(
             `
 SELECT p.id, p.acts, n.normalized as genre, pa.name AS author,
        pa.id as author_id, p.prose_vers, p.prologue, p.title,
@@ -259,7 +259,8 @@ FROM validated_plays AS p
 WHERE p.id=$1
 `,
             [id],
-        )
+    )
+        .then(records => records[0])
         .then(playData => {
             const queries = [
                 mapPromiseToStore(playData, playPerformance(id), 'nb_perfs'),
