@@ -10,7 +10,7 @@ import { STYLES } from '../styles';
 
 function registerPlaysOverview({ plays }) {
     function playFormatter(cell, row) {
-        return ce(Link, { to: `/play/${row.play_id}` }, cell);
+        return ce(Link, { to: `/play/${row.id}` }, cell);
     }
 
     function authorFormatter(cell, row) {
