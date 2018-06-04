@@ -3,31 +3,26 @@ import { createElement as ce, Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { browserHistory } from 'react-router';
+import { DateTime } from 'luxon';
 
 import { dateFormatter } from '..';
 import { buildURL } from '../urls';
-
-function firstDayOfNextMonth(date) {
-    const nextMonth = (date.getMonth() + 1) % 12,
-        year = nextMonth === 0 ? date.getFullYear() + 1 : date.getFullYear();
-    return new Date(year, nextMonth, 1, 12);
-}
-
-function weekdayIndex(date) {
-    return (date.getDay() + 6) % 7; // 0 is Sunday
-}
 
 function daysBetween(d1, d2) {
     return Math.floor((Number(d1) - Number(d2)) / 86400000);
 }
 
+export function luxonParis(obj) {
+    return DateTime.fromObject(obj);
+}
+
 function buildCalendar(data, domselector) {
-    const firstDate = new Date(data[0].date),
-        lastDate = new Date(data[data.length - 1].date);
+    const firstDate = luxonParis(data[0].date),
+        lastDate = luxonParis(data[data.length - 1].date);
 
     const registersByDay = {};
     data.forEach(d => {
-        registersByDay[dateFormatter(new Date(d.date))] = d;
+        registersByDay[luxonParis(d.date)] = d;
     });
 
     const weekdays = [
@@ -54,25 +49,26 @@ function buildCalendar(data, domselector) {
             'décembre',
         ];
 
-    const firstDay = new Date(firstDate.getFullYear(), firstDate.getMonth(), 1),
-        lastDay = firstDayOfNextMonth(lastDate);
+    const firstDay = firstDate.set({ day: 1 }),
+        lastDay = lastDate.set({ day: 1 }).plus({ month: 1 });
+    const plottedData = [];
 
-    const plottedData = d3.time.days(firstDay, lastDay).map(date => {
-        date = new Date(date);
+    for (let d = firstDay; d < lastDay; d=d.plus({ day: 1 })) {
         const dayData = {
-            date,
-            weekday: weekdayIndex(date),
+            d,
+            weekday: d.weekday - 1,
         };
-        if (date < firstDate || date > lastDate) {
+        if (d < firstDate || d > lastDate) {
             dayData.receipts = 0;
             dayData.inrange = false;
         } else {
-            dayData.register = registersByDay[dateFormatter(date)];
+            dayData.register = registersByDay[d];
             dayData.receipts = dayData.register ? dayData.register.receipts : 0;
             dayData.inrange = true;
         }
-        return dayData;
-    });
+        plottedData.push(dayData);
+    }
+
     const minReceipts = Math.min(...data.map(d => d.receipts)),
         maxReceipts = Math.max(...data.map(d => d.receipts));
 
@@ -97,7 +93,7 @@ function buildCalendar(data, domselector) {
     const svg = d3
         .select(domselector)
         .selectAll('svg')
-        .data(d3.range(firstDate.getFullYear(), firstDate.getFullYear() + 1))
+        .data(d3.range(firstDate.year, firstDate.year + 1))
         .enter()
         .append('svg')
         .attr('width', width)
@@ -131,7 +127,7 @@ function buildCalendar(data, domselector) {
 
     svg
         .selectAll('.calendar-monthlabel')
-        .data(d3.time.months(firstDate, lastDate, 3))
+        .data(d3.time.months(firstDate.toJSDate(), lastDate.toJSDate(), 3))
         .enter()
         .append('text')
         .text(d => monthnames[d.getMonth()])
@@ -173,17 +169,23 @@ function buildCalendar(data, domselector) {
                 d.free || !d.inrange || !d.register
                     ? '#fff'
                     : color(d.receipts),
-        )
-        .attr('x', (d, i) => leftmargin + cellsize * Math.floor(i / 7))
-        .attr('y', (d, i) => vmargin + cellsize * (i % 7))
+    )
+        .attr('x', (d, i) => {
+
+            return leftmargin + cellsize * Math.floor((i + firstDay.weekday - 1)/ 7);
+        })
+        .attr('y', (d, i) => {
+            const weekday = d.d.weekday - 1;
+            return vmargin + cellsize * weekday;
+        })
         .on('mouseover', mouseover)
         .on('mouseout', mouseout)
         .on('click', d => {
             hideTooltip();
-            browserHistory.push(buildURL(`/register/${dateFormatter(d.date)}`));
+            browserHistory.push(buildURL(`/register/${d.d.toISODate()}`));
         });
 
-    function mouseover({ register }) {
+    function mouseover({ d, register }) {
         if (!register) {
             return;
         }
@@ -198,7 +200,7 @@ function buildCalendar(data, domselector) {
             p => `<li>${p.play_title} / ${p.author_name}</li>`,
         );
         const content = `
-${dateFormatter(register.date)}<br/>
+${d.toISODate()}<br/>
 Recettes: ${register.receipts} livres
 <ul>
 ${formattedPlays}

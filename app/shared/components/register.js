@@ -108,13 +108,12 @@ function registerMainCardView({ register }) {
     const titleNavElements = [];
 
     if (prevdate) {
-        prevdate = new Date(prevdate);
         titleNavElements.push(
             ce(
                 Link,
                 {
                     to: `/register/${dateFormatter(prevdate)}`,
-                    title: `Soirée du /${dateFormatter(prevdate)}`,
+                    title: `Soirée du ${dateFormatter(prevdate)}`,
                 },
                 ce(IconButton, { name: 'keyboard_arrow_left', colored: true }),
             ),
@@ -122,13 +121,12 @@ function registerMainCardView({ register }) {
     }
     titleNavElements.push(dateFormatter(date));
     if (nextdate) {
-        nextdate = new Date(nextdate);
         titleNavElements.push(
             ce(
                 Link,
                 {
                     to: `/register/${dateFormatter(nextdate)}`,
-                    title: `Soirée du /${dateFormatter(nextdate)}`,
+                    title: `Soirée du ${dateFormatter(nextdate)}`,
                 },
                 ce(IconButton, { name: 'keyboard_arrow_right', colored: true }),
             ),

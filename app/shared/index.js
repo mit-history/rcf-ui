@@ -1,6 +1,7 @@
 import { Component, createElement as ce } from 'react';
 
 import { CardText } from 'react-mdl';
+import { DateTime } from 'luxon';
 
 export const pre = data => ce('pre', null, JSON.stringify(data, null, 2));
 
@@ -9,10 +10,7 @@ export function zeroPad(int) {
 }
 
 export function dateFormatter(date) {
-    date = new Date(date); // XXX when data comes from server (i.e. json), dates are actually strings
-    return `${date.getFullYear()}-${zeroPad(date.getMonth() + 1)}-${zeroPad(
-        date.getDate(),
-    )}`;
+    return `${date.year}-${zeroPad(date.month)}-${zeroPad(date.day)}`;
 }
 
 export function checkboxFormatter(cell) {

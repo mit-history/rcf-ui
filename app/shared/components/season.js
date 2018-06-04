@@ -15,7 +15,7 @@ import { Link, buildURL } from '../urls';
 
 import { mdlclass, numberWithSpaces } from '.';
 import { GenreChord } from './chord';
-import { SeasonCalendar } from './calendar';
+import { SeasonCalendar, luxonParis } from './calendar';
 
 import sregmap from '../sregmap'
 
@@ -257,7 +257,6 @@ function seasonPlaysOverview({ registers }) {
 function seasonMainCardView({ season, registers, firsts, reprises }) {
     const firstRegister = registers[0],
         lastRegister = registers[registers.length - 1];
-
     const properties = [
         {
             label: 'Première date',
@@ -699,7 +698,7 @@ class ASeasonChartView extends Component {
             tooltip: {
                 formatter: function() {
                     const infos = byDate[this.x];
-                    return `${infos.weekday} ${infos.date}<br /><b><a href="/play/${infos.play_id}">${infos.play_title}</a> (genre: ${infos.play_genre})`;
+                    return `${infos.weekday} ${dateFormatter(infos.date)}<br /><b><a href="/play/${infos.play_id}">${infos.play_title}</a> (genre: ${infos.play_genre})`;
                 },
             },
         });

@@ -1,6 +1,8 @@
 import PgFactory from 'pg-promise';
 import sregmap from '../shared/sregmap';
 
+import { DateTime } from 'luxon';
+
 export const pgp = PgFactory();
 
 const db = pgp({
@@ -26,6 +28,10 @@ const db = pgp({
 
 function nbAuthors() {
     return db.one('SELECT COUNT(id) from person_agg', [], a => +a.count);
+}
+
+function dateObject(date) {
+    return DateTime.fromJSDate(date).toObject();
 }
 
 function nbGenres() {
@@ -163,7 +169,7 @@ WHERE r.verification_state_id = 1 AND pp.ext_id=$1 GROUP BY p.title, p.date_de_c
                 title: p.title,
                 genre: p.genre,
                 receipts: Math.round(parseInt(p.receipts / 240)),
-                date_de_premiere: p.date_de_premiere,
+                date_de_premiere: dateObject(p.date_de_premiere),
                 nb_perf: parseInt(p.nb_perf),
                 total_1: parseInt(p.total_1),
                 total_2: parseInt(p.total_2),
@@ -295,7 +301,7 @@ ORDER BY nbperfs DESC, p.title;
                 author_name: row.author_name,
                 nbreprises: Number(row.nbreprises),
                 nbperfs: Number(row.nbperfs),
-                firstdate: row.firstdate,
+                firstdate: dateObject(row.firstdate),
             }));
 }
 
@@ -318,7 +324,7 @@ ORDER BY r.date
         .then(perfs =>
             perfs.map(p => ({
                 season: p.season,
-                date: p.date,
+                date: dateObject(p.date),
                 receipts: Math.floor(p.receipts / 240),
             })),
         );
@@ -408,7 +414,7 @@ ORDER BY r.date, price`,
                     seriesById[record.sc_id] = serie;
                     series.push(serie);
                 }
-                serie.data.push([record.date, Math.round(record.price)]);
+                serie.data.push([dateObject(record.date), Math.round(record.price)]);
             });
             return series;
         });
@@ -442,6 +448,7 @@ ORDER BY r.date`,
 
             let lastDate;
             season.forEach(s => {
+                const sdate = dateObject(s.date);
                 const play = {
                     play_genre: s.genre,
                     play_title: s.title,
@@ -452,19 +459,19 @@ ORDER BY r.date`,
                     firstrun: s.firstrun,
                 };
                 if (s.firstrun && !fprocessed.has(s.play_id)) {
-                    firsts.push(Object.assign({ firstRunDate: s.date }, play));
+                    firsts.push(Object.assign({ firstRunDate: sdate }, play));
                     fprocessed.add(s.play_id);
                 }
                 if (s.reprise && !rprocessed.has(s.play_id)) {
-                    reprises.push(Object.assign({ repriseDate: s.date }, play));
+                    reprises.push(Object.assign({ repriseDate: sdate }, play));
                     rprocessed.add(s.play_id);
                 }
-                if (!lastDate || lastDate.date.getTime() !== s.date.getTime()) {
+                if (!lastDate || lastDate.date.day !== sdate.day) {
                     lastDate = {
                         author: s.author,
                         plays: [play],
                         receipts: Math.round(Number(s.receipts / 240)),
-                        date: s.date,
+                        date: sdate,
                         weekday: s.weekday,
                     };
                     dates.push(lastDate);
@@ -552,7 +559,7 @@ ORDER BY r.date, rp.ordering
 }
 
 function authorSeasonInfos(author, season) {
-    return db.query(
+    return db.map(
         `
 SELECT r.date, r.weekday, r.total_receipts_recorded_l receipts,
        p.id play_id, p.title play_title, n.normalized play_genre
@@ -564,6 +571,7 @@ FROM registers as r
 WHERE pp.ext_id=$1 AND r.season=$2 AND r.verification_state_id = 1
 ORDER BY r.date`,
         [author, season],
+        record => Object.assign({}, record, { date: dateObject(record.date) })
     );
 }
 
@@ -590,7 +598,7 @@ SELECT prev, next FROM (
 WHERE t.date=$1`,
             [date],
         )
-        .then(rows => ({ prevdate: rows[0].prev, nextdate: rows[0].next }));
+        .then(rows => ({ prevdate: dateObject(rows[0].prev), nextdate: dateObject(rows[0].next) }));
 }
 
 function registerInfos(date) {
@@ -615,7 +623,7 @@ ORDER BY rp.ordering`,
         )
         .then(rows => {
             const infos = {
-                date: rows[0].date,
+                date: dateObject(rows[0].date),
                 weekday: rows[0].weekday,
                 receipts: rows[0].receipts,
                 payment_notes: rows[0].payment_notes,
@@ -705,7 +713,7 @@ WHERE T.row_number = 1;
     `).then(results => {
         const processed = [];
         for (const row of results) {
-            processed.push(row);
+            processed.push(Object.assign({}, row, { date: dateObject(row.date) }));
         }
         return processed;
         });
