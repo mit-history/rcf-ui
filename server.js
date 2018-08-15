@@ -5,6 +5,8 @@ const express = require('express');
 
 require('babel-register');
 
+require('dotenv').config();
+
 // mock System.import implementation used by webpack2 for node
 global.System = {
     import(path) {

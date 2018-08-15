@@ -5,6 +5,8 @@ import { DateTime } from 'luxon';
 
 export const pgp = PgFactory();
 
+require('dotenv').config();
+
 const db = pgp({
     host: process.env.POSTGRES_HOST === undefined
         ? '/var/run/postgresql'

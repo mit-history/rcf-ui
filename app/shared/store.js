@@ -5,6 +5,8 @@ import rootReducer from './reducers';
 
 const defaultMiddlewares = [];
 
+require('dotenv').config();
+
 if (process.env.NODE_ENV !== 'production') {
     defaultMiddlewares.push(createLogger({ collapsed: true }));
 }
